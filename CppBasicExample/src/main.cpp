@@ -23,18 +23,23 @@ int main(){
 	s3.score = 60;
 
 	//Method #4 to create struct (array of struct)
-	struct Student studentArray[3] {
+	Student studentArray[3] {
 		{"Daniel", 35, 99},
 		{"Eddie", 22, 66},
 		{"Fiona, 32, 85"}
 	}
 
+	//Use pointer to visit struct
+	Student *p = &s1;
+
 	
 	cout<<"Print result on the screen!"<< endl;
-	cout<<"Name:"<<s1.name<<", Age="<<s1.age<<", Score="<<s1.score<<endl;
-	cout<<"Name:"<<s2.name<<", Age="<<s2.age<<", Score="<<s2.score<<endl;
-	cout<<"Name:"<<s3.name<<", Age="<<s3.age<<", Score="<<s3.score<<endl;
-	for(int i = 0; i < 3; i++) cout<<"Name:"<<studentArray[i].name<<", Age="<<studentArray[i].age<<", Score="<<studentArray[i].score<<endl;
+	cout<<"s1 Name:"<<s1.name<<", Age="<<s1.age<<", Score="<<s1.score<<endl;
+	cout<<"s2 Name:"<<s2.name<<", Age="<<s2.age<<", Score="<<s2.score<<endl;
+	cout<<"s3 Name:"<<s3.name<<", Age="<<s3.age<<", Score="<<s3.score<<endl;
+	for(int i = 0; i < 3; i++) cout<<"studentArray["<<i<<"] Name:"<<studentArray[i].name<<", Age="<<studentArray[i].age<<", Score="<<studentArray[i].score<<endl;
+	cout<<"p Name:"<<p->name<<", Age="<<p->age<<", Score="<<p->score<<endl;
+
 	
 	cout<<endl;
 	return 0;
