@@ -29,6 +29,11 @@ void PrintStudent(Student &s){ //pass struct by reference
 	cout<<"s(in function) Name:"<<s.name<<", Age="<<s.age<<", Score="<<s.score<<endl;
 }
 
+void PrintStudent(const Student *s){ //pass struct by address
+	//s->name = "Hacked"; //will trigger error
+	cout<<"s(in function) Name:"<<s->name<<", Age="<<s->age<<", Score="<<s->score<<endl;
+}
+
 int main(){
 	cout<<"Practise 1: 4 methods to create struct objects"<< endl;
 	//Method #1 to create struct
@@ -97,7 +102,8 @@ int main(){
 
 	
 	cout<<"Practise 5: Use const in struct"<< endl;
-
+	PrintStudent(s1);
+	cout<<"s1(in main) Name:"<<s1.name<<", Age="<<s1.age<<", Score="<<s1.score<<endl;
 
 
 	
