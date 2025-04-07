@@ -6,13 +6,28 @@ struct Student{
 	int score;
 }s3;
 
-struct teacher{ //a struct contains another struct
+struct Teacher{ //a struct contains another struct
 	int id;
 	string name;
 	int age;
-	struct student stu;
+	Student stu;
 
 };
+
+void PrintStudent(Student s){ //pass struct by value
+	s.name = "Hacked";
+	cout<<"s(in function) Name:"<<s.name<<", Age="<<s.age<<", Score="<<s.score<<endl;
+}
+
+void PrintStudent(Student *s){ //pass struct by address
+	s->name = "Hacked";
+	cout<<"s(in function) Name:"<<s->name<<", Age="<<s->age<<", Score="<<s->score<<endl;
+}
+
+void PrintStudent(Student &s){ //pass struct by reference
+	s.name = "Hacked";
+	cout<<"s(in function) Name:"<<s.name<<", Age="<<s.age<<", Score="<<s.score<<endl;
+}
 
 int main(){
 	//Method #1 to create struct
@@ -53,9 +68,22 @@ int main(){
 	t.stu.name = "Hannah";
 	t.stu.age = 20;
 	t.stu.score = 60;
+
+	cout<<"Print teacher result on the screen!"<< endl;
 	cout<<"t Name:"<<t.name<<", Age="<<t.age<<", Score="<<t.score<<endl;
 	cout<<"t.stu Name:"<<t.stu.name<<", Age="<<t.stu.age<<", Score="<<t.stu.score<<endl;
 
+	//pass struct by value
+	PrintStudent(s1);
+	cout<<"s1(in main) Name:"<<s1.name<<", Age="<<s1.age<<", Score="<<s1.score<<endl;
+
+	//pass struct by address
+	PrintStudent(&s2);
+	cout<<"s2(in main) Name:"<<s2.name<<", Age="<<s2.age<<", Score="<<s2.score<<endl;
+	
+	//pass struct by reference
+	PrintStudent(s3);
+	cout<<"s3(in main) Name:"<<s3.name<<", Age="<<s3.age<<", Score="<<s3.score<<endl;
 	
 	cout<<endl;
 	return 0;
