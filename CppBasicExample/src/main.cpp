@@ -75,8 +75,11 @@ int main(){
 	PrintStudent_Address_Const(&s1);
 	cout<<"s1(in main) Name:"<<s1.name<<", Age="<<s1.age<<", Score="<<s1.score<<endl<<endl;
 
-
 	
+	cout<<"Practise 6: Function tests"<< endl;
+	cout<<"func1_default(10) = "<<func1_default(10)<<endl;
+	cout<<"func2_overload() = "<<func2_overload()<<endl;
+	cout<<"func2_overload(10) = "<<func2_overload(10)<<endl;
 	
 	return 0;
 }
