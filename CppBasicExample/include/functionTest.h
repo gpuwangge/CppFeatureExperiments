@@ -7,12 +7,19 @@ int func1_default(int a, int b = 10, int c = 10){ //in C++, function can have de
   return a + b + c;
 }
 
-int func2_overload(){ //in C++, function can overload
+void func2_overload(){ //in C++, function can overload
   cout<<"Call func2_overload()"<<endl;
 }
 
-int func2_overload(int a){
+void func2_overload(int a){
   cout<<"Call func2_overload(int a)"<<endl;
 }
+
+void func2_overload(double a){
+  cout<<"Call func2_overload(double a)"<<endl;
+}
+
+
+
 
 #endif
