@@ -39,7 +39,6 @@ int main(){
 	Student *p = &s1;
 	cout<<"p Name:"<<p->name<<", Age="<<p->age<<", Score="<<p->score<<endl<<endl;
 
-
 	
 	cout<<"Practise 3: A struct(teacher) contains another struct(student)"<< endl;
 	Teacher t;
@@ -53,7 +52,6 @@ int main(){
 	cout<<"Print teacher result on the screen!"<< endl;
 	cout<<"t Name:"<<t.name<<", Age="<<t.age<<", Id="<<t.id<<endl;
 	cout<<"t.stu Name:"<<t.stu.name<<", Age="<<t.stu.age<<", Score="<<t.stu.score<<endl<<endl;
-
 
 	
 	cout<<"Practise 4: Pass struct object as parameter"<< endl;
@@ -69,7 +67,6 @@ int main(){
 	PrintStudent_Reference(s3);
 	cout<<"s3(in main) Name:"<<s3.name<<", Age="<<s3.age<<", Score="<<s3.score<<endl<<endl;
 
-
 	
 	cout<<"Practise 5: Use const in struct"<< endl;
 	PrintStudent_Address_Const(&s1);
@@ -78,8 +75,17 @@ int main(){
 	
 	cout<<"Practise 6: Function tests"<< endl;
 	cout<<"func1_default(10) = "<<func1_default(10)<<endl;
-	cout<<"func2_overload() = "<<func2_overload()<<endl;
-	cout<<"func2_overload(10) = "<<func2_overload(10)<<endl;
+	cout<<"func2_overload(): "<<endl;
+	func2_overload();
+	cout<<"func2_overload(10): "<<endl;
+	func2_overload(10);
+	cout<<"func2_overload(0.1): "<<endl;
+	func2_overload(0.1);
+
+
+
+
+
 	
 	return 0;
 }
