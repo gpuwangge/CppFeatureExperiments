@@ -1,6 +1,8 @@
-#include "../include/main.h"
+#include "../include/common.h"
 #include "../include/structTest.h"
-
+#include "../include/functionTest.h"
+#include "../include/classTest.h"
+#include "../include/templateTest.h"
 
 int main(){
 	cout<<"Practise 1: 4 methods to create struct objects"<< endl;

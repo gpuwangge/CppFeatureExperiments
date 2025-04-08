@@ -1,9 +1,7 @@
 #ifndef __STRUCTTEST_H__
 #define __STRUCTTEST_H__
 
-#include <iostream>
-#include <string.h>
-using namespace std;
+#include "common.h"
 
 struct Student{
 	string name;
