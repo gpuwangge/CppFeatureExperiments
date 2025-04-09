@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-int func1_default(int a, int b = 10, int c = 10){ //in C++, function can have default input vlaues
+int func1_default(int a, int b = 20, int c = 30){ //in C++, function can have default input vlaues
   return a + b + c;
 }
 
