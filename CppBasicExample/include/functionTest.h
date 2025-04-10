@@ -19,7 +19,18 @@ void func2_overload(double a){
   cout<<"Call func2_overload(double a)"<<endl;
 }
 
+void FunctionTest(){
+  cout<<"=====Function Test====="<< endl;
+  cout<<"func1_default(10) = "<<func1_default(10)<<endl;
+  cout<<"func2_overload(): "<<endl;
+  func2_overload();
+  cout<<"func2_overload(10): "<<endl;
+  func2_overload(10);
+  cout<<"func2_overload(0.1): "<<endl;
+  func2_overload(0.1);
 
+  cout<<endl;
+}
 
 
 #endif
