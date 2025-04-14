@@ -3,6 +3,9 @@
 
 #include "common.h"
 
+//Demo of Inheritance/Polymorphism
+
+
 //Example Base Class
 class BaseClass{
 public:
