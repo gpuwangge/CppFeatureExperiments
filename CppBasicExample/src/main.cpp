@@ -3,6 +3,7 @@
 #include "../include/functionTest.h"
 #include "../include/classTest.h"
 #include "../include/templateTest.h"
+#include "../include/pcBuilding.h"
 
 int main(){
 	StructTest();
@@ -22,6 +23,11 @@ int main(){
 
 	ClassTextV_Copy();
 	cout<<endl;
+	
+	PCBuildingTest();
+	cout<<endl;
+
+
 	
 	return 0;
 }

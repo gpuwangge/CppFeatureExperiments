@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-//Demo of Inheritance/Polymorphism
+//Reference: https://blog.csdn.net/wangxiaojun911/article/details/21929473
 
 
 //Example Base Class
