@@ -2,8 +2,8 @@
 #include "../include/structTest.h"
 #include "../include/functionTest.h"
 #include "../include/classTest.h"
-#include "../include/templateTest.h"
 #include "../include/pcBuilding.h"
+#include "../include/customArray.h"
 
 int main(){
 	StructTest();
@@ -25,9 +25,12 @@ int main(){
 	cout<<endl;
 	
 	PCBuildingTest();
+
+	CustomArrayTest_Int();
 	cout<<endl;
 
-
+	CustomArrayTest_Person();
+	cout<<endl;
 	
 	return 0;
 }

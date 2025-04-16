@@ -94,6 +94,8 @@ public:
       
 
 void PCBuildingTest(){
+    cout<<"=====PC Building Test====="<< endl;
+
     CPU *intelCPU = new IntelCPU;
     GPU *intelGPU = new IntelGPU;
     IntelMemory *intelMemory = new IntelMemory;
