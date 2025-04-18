@@ -92,6 +92,9 @@ MyCustomDataType &&a = std::move(b);
 - 如果有一个资源要从一个对象转移到另一个对象，那就需要右值引用了。因为左值引用只能“创建”别名，不能转移资源到一个已经存在的对象上  
 - 另外，当类的成员函数返回临时对象的时候，编译器会尝试调用"移动构造函数"(如果有的话)；这样接收这个临时对象的变量就能在不进行拷贝的情况下接收该资源。（这里需要一个例子）  
 
+## Smart Pointer
+Reference: https://github.com/gpuwangge/CppAddressExperiments  
+
 
 # CppBasicExample
 ## 内存分区模型
