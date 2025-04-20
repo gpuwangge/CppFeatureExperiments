@@ -11,7 +11,7 @@ void PrintVector(vector<int> &v, string s){
 }
 
 void RvalueReference_Test(){
-	cout<<"Rvalue Reference Test (int)"<<endl;
+	cout<<"=====Rvalue Reference Test (int)====="<<endl;
 	int a = 42;
 	int b = a;
 	int &c = a;
@@ -24,7 +24,7 @@ void RvalueReference_Test(){
 	cout<<"&e = "<<&e<<", e = "<<e<<", Rvalue Reference(Cast)"<<endl;
 	cout<<endl;
 
-	cout<<"Rvalue Reference Test (vector)"<<endl;
+	cout<<"=====Rvalue Reference Test (vector)====="<<endl;
 	vector<int> vec_a = {11,22,33,44,55};
 	vector<int> vec_b = vec_a;
 	vector<int> &vec_c = vec_a;
@@ -99,7 +99,7 @@ MyString ReturnTemporaryObject(){
 }
 
 void RvalueReference_Class_Test(){
-	cout<<"Rvalue Reference Test (Class): Move Constructor and Move Assignment Operator"<<endl;
+	cout<<"=====Rvalue Reference Test (Class): Move Constructor and Move Assignment Operator====="<<endl;
 
 	MyString a("42");
 	cout<<"a.print(): ";
@@ -120,7 +120,7 @@ void RvalueReference_Class_Test(){
 }
 
 void RvalueReference_Return_Test(){
-	cout<<"Rvalue Reference Test (Class)"<<endl;
+	cout<<"=====Rvalue Reference Test (Class)====="<<endl;
 	MyString d = ReturnTemporaryObject();
 	cout<<"d.print(): "; d.print(); // Result: Temporary
 }

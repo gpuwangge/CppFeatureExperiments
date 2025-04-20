@@ -3,7 +3,7 @@ Go to the project dir
 > mkdir build  
 > cd build  
 > cmake -G "MinGW Makefiles" ..  
-> make  
+> make -j 
 
 # Cpp11Example
 ## 右值引用(rvalue reference)
