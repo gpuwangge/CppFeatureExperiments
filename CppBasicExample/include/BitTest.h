@@ -3,8 +3,6 @@
 
 #include "common.h"
 #include <bitset>
-using namespace std;
-
 
 /*Complement notion for negative: flip each bit and add 1*/
 bool GetBit(int num, int i){
