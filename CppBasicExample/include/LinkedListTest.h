@@ -1,5 +1,7 @@
-#include<iostream>
-using namespace std;
+#ifndef __LINKEDLISTTEST_H__
+#define __LINKEDLISTTEST_H__
+
+#include "common.h"
 
 class LinkListElement{
 public:
@@ -62,7 +64,7 @@ LinkListElement* FindLinkListElement(LinkListElement* head, int data){
 }
 
 void TraverseLinkList(LinkListElement *head){
-	cout<<"Traverse ";
+	cout<<"Traverse Linked List Data: ";
 	while(head->next!= NULL){
 		cout<<head->next->data<<" ";
 		head = head->next;
@@ -79,24 +81,12 @@ void ClearLinkList(LinkListElement *head){
 
 }
 
-
-
-/******A test******/
-class testClass{
-public:
-	int x;
-};
-void test(testClass *t){
-	//t=NULL;//doesn't change t outside of function, because t is a copy here
-	t->x = 564;//does change t->x, because t-> is indexing the address of t
-}
-/******test ends*******/
-
-
-int main(){
+void LinkedListTest(){
+	cout<<"=====Linked List Test====="<<endl;
 
 	LinkListElement *head = new LinkListElement(0);
 
+	cout<<"Print Empty Linked List: ";
 	TraverseLinkList(head);
 
 	for(int i = 0;i < 5; i++){
@@ -107,10 +97,10 @@ int main(){
 
 	LinkListElement *result = FindLinkListElement(head,112);
 
-	cout<<"Result is "<<result->data<<endl;
+	cout<<"Find element 112, result is "<<result->data<<endl;
 
 	InsertLinkListElement_Front(head, 9999);
-
+	cout<<"Insert 9999 to Linked List: ";
 	TraverseLinkList(head);
 
 	cout<<"Delete Test:"<<endl;
@@ -134,20 +124,8 @@ int main(){
 
 	TraverseLinkList(head);
 
-	
-
-	/*A test*/
 	cout<<endl;
-	cout<<"Below is a test"<<endl;
-	testClass *t = new testClass();
-	t->x = 100;
-	test(t);
-	cout<<t->x<<endl;
-	/*test ends*/
-
-	getchar();
-	return 0;
 }
 
-
+#endif
 
