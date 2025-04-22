@@ -89,7 +89,7 @@ void BuildVector(){
 void StringBuffer(){
 	cout<<"StringBuffer: NA"<<endl;
 
-	cout<<endl;
+	//cout<<endl;
 }
 
 

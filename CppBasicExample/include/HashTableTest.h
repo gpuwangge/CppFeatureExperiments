@@ -1,6 +1,10 @@
-#include <iostream>
-#include <list>
-using namespace std;
+
+#ifndef __HASHTABLETEST_H__
+#define __HASHTABLETEST_H__
+
+#include "common.h"
+
+
 /*Users/MrJoke/Desktop/Monster/Dropbox/JobHunt/JobTester/HashTable/HashTableTest.cpp
 /*Hash Talbe: 1.Inorder to save space, the data structure should be dynamic*/
 /*To be specific, a dynamic array*/
@@ -38,6 +42,11 @@ public:
 		key = new char[13];
 	}
 
+	~DynamicHashTable(){
+		delete []elem;
+		delete []key;
+	}
+
 	int GetIndex(int x){
 		return x/10;
 	}
@@ -55,14 +64,16 @@ public:
 		elem[index].push_back(DynamicHashElem(_key, 1));
 	}
 
-	void PrintAll(){
+	void PrintAll(string s){
+		cout<<"Print All: "<<s<<endl;
 		for(int i = 0; i < 13; i++){
 			for(list<DynamicHashElem>::iterator iter = elem[i].begin(); 
 				iter != elem[i].end();
 				iter++){
-					cout<<(char)((*iter).key)<<","<<(*iter).count<<endl;
+					cout<<"("<<(char)((*iter).key)<<","<<(*iter).count<<") ";
 			}
 		}
+		cout<<endl;
 	}
 };
 
@@ -73,9 +84,15 @@ public:
 	HashTable(){
 		value = new int[52];
 		key = new char[52];
-		for(int i = 0;i < 52; i++){
+		for(int i = 0; i < 52; i++){
+			key[i] = ' ';
 			value[i] = 0;
 		}
+	}
+
+	~HashTable(){
+		delete []key;
+		delete []value;
 	}
 
 	int GetIndex(int x){
@@ -98,10 +115,10 @@ public:
 		}
 	}
 
-	void PrintAll(){
-		cout<<"Print All:"<<endl;
+	void PrintAll(string s){
+		cout<<"Print All: "<<s<<endl;
 		for(int i = 0; i < 52; i++){
-			cout<<key[i]<<" "<<value[i]<<"; ";
+			cout<<"("<<key[i]<<","<<value[i]<<"); ";
 		}
 		cout<<endl;
 	}
@@ -109,50 +126,45 @@ public:
 };
 
 
+void HashTableTest(){
+	cout<<"=====Hash Table Test====="<<endl;
 
-
-int main(){
 	HashTable hashTable;
-	hashTable.PrintAll();
+	hashTable.PrintAll("(Empty)");
 
-	char *text = "A good hash function and implementation algorit\
-		hm are essential for good hash table performance but may be difficult to achieve\
-		A basic requirement is that the function should provide a \
-		uniform distribution of hash values A nonuniform distribution incre\
-		ases the number of collisions and the cost of resolving them \
-		Uniformity is sometimes difficult to ensure by design but may\
-		be evaluated empirically using statistical tests eg a Pearsons \
-		chisquared test for discrete uniform distributions";
+	const char *text1 = "A good hash function and implementation algorit\
+hm are essential for good hash table performance but may be difficult to achieve\
+A basic requirement is that the function should provide a \
+uniform distribution of hash values A nonuniform distribution incre\
+ases the number of collisions and the cost of resolving them \
+Uniformity is sometimes difficult to ensure by design but may\
+be evaluated empirically using statistical tests eg a Pearsons \
+chisquared test for discrete uniform distributions";
 
-	for(int i =0; i< strlen(text); i++){
-		if(text[i] != ' ')
-			hashTable.AddPair(text[i]);
+	for(int i = 0; i< strlen(text1); i++){
+		if(text1[i] != ' ')
+			hashTable.AddPair(text1[i]);
 	}
-
-	hashTable.PrintAll();
-
-	char *text2 = "A good hash function and implementation algorit\
-		hm are essential for good hash table performan";
-
-	for(int i =0; i< strlen(text2); i++){
-		if(text2[i] != ' ')
-			hashTable.DeletePair(text[i]);
-	}
-
-
-	hashTable.PrintAll();
-	cout<<endl;
-
-	cout<<"DynamicHashTable"<<endl;
-	DynamicHashTable dHashTable;
-	for(int i =0; i< strlen(text2); i++){
-		dHashTable.AddPair(text2[i]);
-	}
-	dHashTable.PrintAll();
-	cout<<endl;
-
+	hashTable.PrintAll("(Add text1)");
 	
+	const char *text2 = "A good hash function and implementation algorit\
+hm are essential for good hash table performan";
 
-	getchar();
-	return 0;
+	for(int i = 0; i< strlen(text2); i++){
+		if(text2[i] != ' ')
+			hashTable.DeletePair(text2[i]);
+	}
+	hashTable.PrintAll("(Remove text2)");
+	cout<<endl;
+
+	DynamicHashTable dHashTable;
+	for(int i = 0; i< strlen(text2); i++){
+		if(text2[i] != ' ')
+			dHashTable.AddPair(text2[i]);
+	}
+	dHashTable.PrintAll("(Dynamic Hash Table: Add text2)");
+	cout<<endl;
 }
+
+
+#endif
