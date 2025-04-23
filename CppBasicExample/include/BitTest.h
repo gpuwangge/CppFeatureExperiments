@@ -43,7 +43,7 @@ int UpdateBit(int num, int i, int v){ //merge setbit and clearbit
 	return (num & mask) | (v << i);
 }
 
-void BitTest(){
+void BitOperationTest(){
 	cout<<"=====Bit Test====="<<endl;
 
 	int x = 2;
