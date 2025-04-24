@@ -28,17 +28,16 @@
 /*Height balanced, get height of each nodes*/
 
 /*Trie*/
-//һ���ڵ���������ﶼ����ͬ��ǰ׺��Ҳ��������ڵ��Ӧ���ַ����������ڵ��Ӧ���ַ�����
-//trie��������������ʾ���統����һ����ַ�������Զ����������ܵ�ѡ��
-//��û����ȫƥ���������������Է���ǰ׺�����ƵĿ��ܡ�
+//a node's all sons have the same prefix, and they are the string of this node, and root is empty string
+//trie is often used in search. such as entering a web url, auto all possible urls
+//if there is no complete match, can return most similar result
 
-/*���������*/
-//������ڵ�����������գ��������������н���ֵ��С�ڻ�������ĸ�����ֵ��
-//����ڵ�����������գ��������������н���ֵ���������ĸ�����ֵ��
-//����ڵ����������Ҳ�ֱ�Ϊ�����������
-//û�м�ֵ��ȵĽڵ㣨Ӣ�no duplicate nodes����
-//�������������������ȿ��Եõ�һ���ź��������
-
+/*Binary Search Tree*/
+//if any node's left is non empty, then all left sub-tree's node's value is less or equal to its root node
+//if any node's right is non empty, then all right sub-tree's node's value is larger or equal to its root node
+//any left sub tree or right sub tree are also binary search tree
+//no duplicate nodes
+//in-order traverse will produce a sorted array
 
 /*Binary Max Heap Node*/
 class HeapNode{
