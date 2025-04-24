@@ -5,6 +5,7 @@
 #include "../include/LinkedListTest.h"
 #include "../include/MemoryTest.h"
 #include "../include/MultiThreadsTest.h"
+#include "../include/RecursionTest.h"
 
 int main(){
 	BitOperationTest();
@@ -13,6 +14,7 @@ int main(){
 	LinkedListTest();
 	MemoryTest();
 	//MultiThreadsTest();
+	RecursionTest();
 
 	return 0;
 }

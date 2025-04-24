@@ -1,13 +1,15 @@
-#include <iostream>
-#include <Windows.h>
-using namespace std;
+
+#ifndef __RECURSIONTEST_H__
+#define __RECURSIONTEST_H__
+
+#include "common.h"
 
 void DoPermute(string in, string out, bool* used, int length, int level){
 	if(level == length){
 		for(int i = 0; i< out.length(); i++){
 			cout<<out[i];
 		}
-		cout<<endl;
+		cout<<"; ";
 		return;
 	}
 
@@ -37,7 +39,7 @@ void DoCombine(string in, string out, int length, int start){
 		out.push_back(in[i]);
 		for(int j = 0; j < out.length(); j++)
 			cout<<out[j];
-		cout<<endl;
+		cout<<"; ";
 		if(i < length - 1){
 			DoCombine(in, out, length, i+1);
 
@@ -53,20 +55,20 @@ void CombineOfString(string s){
 }
 
 
-void main(){
+void RecursionTest(){
+	cout << "=====Recursion Test=====" << endl;
 
-	cout<<"Test1:"<<endl;
+	cout<<"Recursion Test1 (PermutationOfString)"<<endl;
 	string s = "abcd";
 	PermutationOfString(s);
 	cout<<endl;
 
-	cout<<"Test2:"<<endl;
+	cout<<"Recursion Test2: (CombineOfString)"<<endl;
 	CombineOfString(s);
 	cout<<endl;
 
-	
-
-	getchar();
-	return;
+	cout<<endl;
 }
+
+#endif
 
