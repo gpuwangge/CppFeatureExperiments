@@ -69,14 +69,14 @@ void MergeSort(int a[]){
 void MergeSortRecursion(int input[], int output[], int start, int end){
 	if(start == end) {output[start] = input[start]; return; }
 
-    	int tmpOutput[MAX]; //�����ռ� 
+    	int tmpOutput[MAX]; //extra storage
 	
 	int mid = (start + end)/2;
-	MergeSortRecursion(input, tmpOutput, start, mid);//�ź�ǰ�벿�� 
-	MergeSortRecursion(input, tmpOutput, mid+1, end);//�źú�벿�� 
+	MergeSortRecursion(input, tmpOutput, start, mid);//sort the first half
+	MergeSortRecursion(input, tmpOutput, mid+1, end);//sort the second half
 
-	/*�Ƚ�����ָ����ָ���Ԫ�أ�ѡ�����С��Ԫ�ط��뵽�ϲ��ռ䣬���ƶ�ָ�뵽��һλ��
-	�ظ�����ֱ��ĳһָ��ﵽ����β����һ����ʣ�µ�����Ԫ��ֱ�Ӹ��Ƶ��ϲ�����β*/
+	/*compare the two elements of the two points, choose the smaller one and put into merge space, and move pointer to the next position
+	repeat until one of the pointer reaches the end, then put the rest elements of the other part to the end of the merge area*/
 	int outputIndex = start;
 	const int midPos = mid;
 	mid++;
@@ -130,15 +130,15 @@ void Swap(int &x, int &y){
 void qsort(int a[], int start, int end){ 
     if(start >= end) return;
     int i = start;
-	int j = end; //a[start]����Ԫ 
-	while(true){//�������whileѭ��,���鱻��Ϊ���룬ǰ�붼����Ԫ���С����붼����Ԫ�� 
+	int j = end; //a[start] is main element
+	while(true){//after the while loop, the array is divided into two, the first half are smaller than the main element; the second half are larger than the main element
 		while(a[i] < a[start] && i!=end)i++; 
 		while(a[j] > a[start] && j!=start)j--; 
 		if(i >= j) break;
 		swap(a[i], a[j]); 
 	}
-	swap(a[start], a[i]);//����Ԫstart���뵽i(��j)��λ�� 
-	qsort(a, start, i-1);//������i(��j)Ϊ���߷�����
+	swap(a[start], a[i]);//insert main element into i(or j) pos
+	qsort(a, start, i-1);//then use new i(or j) to divide into two half
 	qsort(a, i+1, end);
 }  
 

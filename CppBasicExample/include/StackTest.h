@@ -1,5 +1,7 @@
-#include <iostream>
-using namespace std;
+#ifndef __STACKTEST_H__
+#define __STACKTEST_H__
+
+#include "common.h"
 
 #define EMPTY -99999
 
@@ -87,8 +89,9 @@ public:
 	}
 };
 
-void main(){
-	cout<<"Stack test:"<<endl;
+void StackTest(){
+	cout << "=====Stack Test=====" << endl;
+
 	Stack stack;
 	
 	cout<<"Input sequence:"<<endl;
@@ -130,7 +133,7 @@ void main(){
 		cout<<returnValue<<" ";
 	cout<<"Over"<<endl;
 
-	getchar();
+	cout<<endl;
 
 	/*
 	010101
@@ -145,3 +148,5 @@ void main(){
 	00
 	10*/
 }
+
+#endif
