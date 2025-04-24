@@ -1,6 +1,8 @@
-#include<iostream>
-#include<vector> 
-using namespace std;
+#ifndef __SORTTEST_H__
+#define __SORTTEST_H__
+
+#include "common.h"
+
 #define MAX 10 
     
 int b[MAX]={13,31,49,1,8,3,2,33,6,12};
@@ -14,45 +16,49 @@ void Merge(int SR[],int TR[],int i,int m, int n);
 void BinarySearch(int *a, int lower, int upper, int target);
 
 
-int main(){   int i,j;int temp;
+void SortingTest(){   
+    cout << "=====Sorting Test=====" << endl;
+
+    cout<<"Input:";
+    int i,j;int temp;
     for(i=0;i<MAX;i++)cout<<b[i]<<" "; cout<<endl;  
      
     //------------------------------------
-    seta(a);//Ã°ÅÝ·¨£¬ÎÈ¶¨ÅÅÐò£¬Æ½¾ùÊ±¼äO(n*n)£¬×î»µÊ±¼äO(n*n)£¬×îºÃÊ±¼äO(n) 
+    cout<<"Bubble sort, stable, average O(n*n), worst O(n*n), best O(n) "<<endl;
+    seta(a);
     for(i=0;i<(MAX-1);i++)
        for(j=0;j<(MAX-1-i);j++)
          if(a[j]>a[j+1]){temp=a[j];a[j]=a[j+1];a[j+1]=temp;}
-    cout<<"Ã°ÅÝ·¨:";
+    cout<<"Bubble sort result:";
     for(i=0;i<MAX;i++)cout<<a[i]<<" ";  
     cout<<endl; 
     //---------------------------------
-    seta(a);//¿ìËÙÅÅÐò ÕâÊÇÒ»¸ö·ÖÖÎËã·¨£¬×¢ÒâÖ÷ÔªµÄ¸ÅÄî¡£Ê¹ÓÃÁË¸¨Öú¿Õ¼ä£¬²»ÎÈ¶¨Ëã·¨¡£
-            //Æ½¾ùÊ±¼äO(n*logn)£¬×î»µÊ±¼äO(n*n)£¬×îºÃÊ±¼äO(n*logn)  
+    cout<<"Quick sort, divide and conquer, use extra storage, not stable. average O(n*logn), worst O(n*n), best O(n*logn) "<<endl;
+    seta(a);
     qsort(a,0,MAX-1); //Recursive
-    cout<<"¿ìËÙÅÅÐò:";
+    cout<<"Quick sort result:";
     for(i=0;i<MAX;i++)cout<<a[i]<<" ";
     cout<<endl;
     //-------------------------------------
-    seta(a);// ²åÈëÅÅÐò,×î¼òµ¥µÄÎÈ¶¨ÅÅÐò£¬Æ½¾ùÊ±¼äO(n*n)£¬×î»µÊ±¼äO(n*n)£¬×îºÃÊ±¼äO(n)¡£ÏëÏë×¥ÅÆµÄ¹ý³Ì  
+    cout<<"Insert sort, simple and stable. average O(n*n), worst O(n*n), best O(n) "<<endl;
+    seta(a);
     insertionSort(a);
-    cout<<"²åÈëÅÅÐò:";
+    cout<<"Insert sort result:";
     for(i=0;i<MAX;i++)cout<<a[i]<<" ";  
     cout<<endl;  
     //------------------------------------
-    //Ñ¡ÔñÅÅÐò: ¼òµ¥£¬µ«ÊÇÊÇÐ§ÂÊ×îµÍµÄÅÅÐò¡£ËùÓÐÊ±¼ä¶¼ÊÇO(n*n)¡£ 1¡¢±È½Ï2¸ö¹Ø¼ü×Ö´óÐ¡ 2¡¢½»»»ÔªËØ 
+    //Not implemented: selection sort, simple, all time is O(n*n). 1. compare two elements; 2. swap elements
     //-----------------------------
-    //¶ÑÅÅÐò£ººÜÀíÏëµÄÅÅÐò£¬ËùÓÐÊ±¼ä¶¼ÊÇO(n*logn)
+    //Not implemented: Heap sort, O(n*logn)
     //------------------------- 
-    //¹é²¢ÅÅÐò¡£À´Ô´ÓÚ°ÑÁ½¸öÏàÁÚÓÐÐò¼ÇÂ¼¹é²¢ÎªÒ»¸öÓÐÐò¼ÇÂ¼ 
-    //ºÜÀíÏëµÄÅÅÐò£¬ËùÓÐÊ±¼ä¶¼ÊÇO(n*logn)£¬È±µãÊÇÐèÒª¸¨Öú¿Õ¼äO(n)£¬ËüÊÇÎÈ¶¨µÄÅÅÐò
+    cout<<"Merge sort, all time is O(n*logn), need extra storage O(n), stable"<<endl;
     seta(a);
     MergeSort(a); //Recursive
-    cout<<"¹é²¢ÅÅÐò:";
+    cout<<"Merge sort result:";
     for(i=0;i<MAX;i++)cout<<a[i]<<" ";
     cout<<endl;
     //------------------------------------------------------------------------------
-    getchar(); 
-    return 0;
+    cout<<endl;
 } 
 
 
@@ -63,14 +69,14 @@ void MergeSort(int a[]){
 void MergeSortRecursion(int input[], int output[], int start, int end){
 	if(start == end) {output[start] = input[start]; return; }
 
-    	int tmpOutput[MAX]; //¸¨Öú¿Õ¼ä 
+    	int tmpOutput[MAX]; //ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½ 
 	
 	int mid = (start + end)/2;
-	MergeSortRecursion(input, tmpOutput, start, mid);//ÅÅºÃÇ°°ë²¿·Ö 
-	MergeSortRecursion(input, tmpOutput, mid+1, end);//ÅÅºÃºó°ë²¿·Ö 
+	MergeSortRecursion(input, tmpOutput, start, mid);//ï¿½Åºï¿½Ç°ï¿½ë²¿ï¿½ï¿½ 
+	MergeSortRecursion(input, tmpOutput, mid+1, end);//ï¿½ÅºÃºï¿½ë²¿ï¿½ï¿½ 
 
-	/*±È½ÏÁ½¸öÖ¸ÕëËùÖ¸ÏòµÄÔªËØ£¬Ñ¡ÔñÏà¶ÔÐ¡µÄÔªËØ·ÅÈëµ½ºÏ²¢¿Õ¼ä£¬²¢ÒÆ¶¯Ö¸Õëµ½ÏÂÒ»Î»ÖÃ
-	ÖØ¸´²½ÖèÖ±µ½Ä³Ò»Ö¸Õë´ïµ½ÐòÁÐÎ²½«ÁíÒ»ÐòÁÐÊ£ÏÂµÄËùÓÐÔªËØÖ±½Ó¸´ÖÆµ½ºÏ²¢ÐòÁÐÎ²*/
+	/*ï¿½È½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ôªï¿½Ø£ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½Ôªï¿½Ø·ï¿½ï¿½ëµ½ï¿½Ï²ï¿½ï¿½Õ¼ä£¬ï¿½ï¿½ï¿½Æ¶ï¿½Ö¸ï¿½ëµ½ï¿½ï¿½Ò»Î»ï¿½ï¿½
+	ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½Ä³Ò»Ö¸ï¿½ï¿½ïµ½ï¿½ï¿½ï¿½ï¿½Î²ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ê£ï¿½Âµï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½Ö±ï¿½Ó¸ï¿½ï¿½Æµï¿½ï¿½Ï²ï¿½ï¿½ï¿½ï¿½ï¿½Î²*/
 	int outputIndex = start;
 	const int midPos = mid;
 	mid++;
@@ -124,15 +130,15 @@ void Swap(int &x, int &y){
 void qsort(int a[], int start, int end){ 
     if(start >= end) return;
     int i = start;
-	int j = end; //a[start]ÊÇÖ÷Ôª 
-	while(true){//¾­¹ýÕâ¸öwhileÑ­»·,Êý×é±»·ÖÎªÁ½°ë£¬Ç°°ë¶¼±ÈÖ÷Ôªºó°ëÐ¡£¬ºó°ë¶¼±ÈÖ÷Ôª´ó 
+	int j = end; //a[start]ï¿½ï¿½ï¿½ï¿½Ôª 
+	while(true){//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½whileÑ­ï¿½ï¿½,ï¿½ï¿½ï¿½é±»ï¿½ï¿½Îªï¿½ï¿½ï¿½ë£¬Ç°ï¿½ë¶¼ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ë¶¼ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½ 
 		while(a[i] < a[start] && i!=end)i++; 
 		while(a[j] > a[start] && j!=start)j--; 
 		if(i >= j) break;
 		swap(a[i], a[j]); 
 	}
-	swap(a[start], a[i]);//°ÑÖ÷Ôªstart²åÈëµ½i(»òj)µÄÎ»ÖÃ 
-	qsort(a, start, i-1);//ÔÙÒÔÐÂi(»òj)Îª½çÏß·ÖÁ½°ë
+	swap(a[start], a[i]);//ï¿½ï¿½ï¿½ï¿½Ôªstartï¿½ï¿½ï¿½ëµ½i(ï¿½ï¿½j)ï¿½ï¿½Î»ï¿½ï¿½ 
+	qsort(a, start, i-1);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½i(ï¿½ï¿½j)Îªï¿½ï¿½ï¿½ß·ï¿½ï¿½ï¿½ï¿½ï¿½
 	qsort(a, i+1, end);
 }  
 
@@ -211,3 +217,6 @@ void BinarySearch(int *a, int lower, int upper, int target){
     //}
 
 }
+
+
+#endif

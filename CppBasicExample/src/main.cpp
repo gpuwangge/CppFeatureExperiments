@@ -6,6 +6,7 @@
 #include "../include/MemoryTest.h"
 #include "../include/MultiThreadsTest.h"
 #include "../include/RecursionTest.h"
+#include "../include/SortingTest.h"
 
 int main(){
 	BitOperationTest();
@@ -15,6 +16,7 @@ int main(){
 	MemoryTest();
 	//MultiThreadsTest();
 	RecursionTest();
+	SortingTest();
 
 	return 0;
 }
