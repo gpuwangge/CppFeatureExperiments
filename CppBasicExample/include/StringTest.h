@@ -1,5 +1,7 @@
-#include <iostream>
-using namespace std;
+#ifndef __STRINGTEST_H__
+#define __STRINGTEST_H__
+
+#include "common.h"
 
 //can use string1 += string2
 //string.append(&x)
@@ -9,7 +11,7 @@ void CStyleString(){
 	cout<<"CStyleString"<<endl;
 
 	cout<<"Length and Index Test:"<<endl;
-	char* str = "123";
+	char str[] = "123";
 	cout<<"strlen: "<<strlen(str)<<endl;;
 	for(int i = 0; i< strlen(str);i++){
 		cout<<i<<":"<<str[i]<<endl; 
@@ -93,7 +95,7 @@ int MyStrLen(char *x){
 //===================
 
 
-void Reverse(char *s, char *output){//buggy?
+void Reverse(const char *s, char *output){//buggy?
 	int len = strlen(s);
 	int bufferIndex = 0;
 	int outputIndex = 0;
@@ -116,14 +118,16 @@ void Reverse(char *s, char *output){//buggy?
 	}
 }
 
-void main(){
+void StringTest(){
+	cout << "=====String Test=====" << endl;
+
 	CStyleString();
 	cout<<endl;
 	CPlusStyleString();
 	cout<<endl;
 
 	cout<<"My strcpy"<<endl;
-	char *source = "Input";
+	char source[] = "Input";
 	char *destination;
 	destination = new char[strlen(source)];
 	MyStrcpy(source, destination);
@@ -134,7 +138,7 @@ void main(){
 
 	cout<<"My strcmp"<<endl;
 	cout<<MyStrcmp(source,destination)<<endl;
-	char *diff = "Another";
+	char diff[] = "Another";
 	cout<<MyStrcmp(source,diff)<<endl;
 	cout<<endl;
 
@@ -145,7 +149,7 @@ void main(){
 
 
 
-	char *text = "A good hash function and implementation algorit\
+	const char *text = "A good hash function and implementation algorit\
 		hm are essential for good hash table performance but may be difficult to achieve\
 		A basic requirement is that the function should provide a \
 		uniform distribution of hash values A nonuniform distribution incre\
@@ -165,7 +169,7 @@ void main(){
 	}
 	cout<<endl;
 
-	getchar();
-	return;
-
+	cout<<endl;
 }
+
+#endif

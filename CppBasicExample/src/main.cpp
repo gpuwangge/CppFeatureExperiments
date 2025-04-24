@@ -8,6 +8,8 @@
 #include "../include/RecursionTest.h"
 #include "../include/SortingTest.h"
 #include "../include/StackTest.h"
+#include "../include/StringTest.h"
+#include "../include/TreeTest.h"
 
 int main(){
 	BitOperationTest();
@@ -19,6 +21,8 @@ int main(){
 	RecursionTest();
 	SortingTest();
 	StackTest();
+	StringTest();
+	TreeTest();
 
 	return 0;
 }

@@ -5,6 +5,7 @@
 #include <string.h>
 #include <memory>
 #include <list>
+#include <vector>
 using namespace std;
 
 #endif

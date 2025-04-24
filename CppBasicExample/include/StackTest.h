@@ -5,11 +5,11 @@
 
 #define EMPTY -99999
 
-class Node{
+class StackNode{
 public:
 	int value;
-	Node *next;
-	Node (int _value){
+	StackNode *next;
+	StackNode (int _value){
 		value = _value;
 		next = NULL;
 	}
@@ -19,16 +19,16 @@ public:
 /*first-in-first-out*/
 class Queue{
 public:
-	Node *first, *last;
+	StackNode *first, *last;
 	Queue(){
-		first = new Node(0);
-		last = new Node(0);
+		first = new StackNode(0);
+		last = new StackNode(0);
 	}
 
 	int Dequeue(){//same as stack
 		if(first->next != NULL){
 			int x = first->next->value;
-			Node *tmpNode = first->next;
+			StackNode *tmpNode = first->next;
 			first->next = tmpNode->next;
 			delete tmpNode;
 			return x;
@@ -38,7 +38,7 @@ public:
 	}
 
 	void Enqueue(int value){
-		Node *n = new Node(value);
+		StackNode *n = new StackNode(value);
 		if(first->next == NULL){
 			first->next = n;
 			last->next = n;
@@ -55,15 +55,15 @@ public:
 
 class Stack{
 public:
-	Node *head;
+	StackNode *head;
 	Stack(){
-		head= new Node(0);
+		head= new StackNode(0);
 	}
 
 	int Pop(){
 		if(head->next != NULL){
 			int x = head->next->value;
-			Node *tmpNode = head->next;
+			StackNode *tmpNode = head->next;
 			head->next = tmpNode->next;
 			delete tmpNode;
 			return x;
@@ -72,14 +72,14 @@ public:
 	}
 
 	void Push(int value){
-		Node *n = new Node(value);
+		StackNode *n = new StackNode(value);
 		n->next = head->next;
 		head->next = n;
 	}
 
 	void PrintAll(){
 		cout<<"Print all:"<<endl;
-		Node *headCopy = head;
+		StackNode *headCopy = head;
 		while(head->next!=NULL){
 			cout<<head->next->value<<" ";
 			head = head->next;
