@@ -260,6 +260,9 @@ for (c = 0; n; ++c)
 如果n是奇数，那么n的二进制中1的个数是n/2中1的个数+1  
 (http://www.cnblogs.com/graphics/archive/2010/06/21/1752421.html)  
 
+LSB: Least Significant Bits, 二进制的最右边那一位  
+MSB: Most Significant Bits, 二进制的最左边那一位(在有符号数中就是符号位)  
+
 ## String Buffer
 String STL use Copy-On-Write  
 Reason of String Buffer: Create a buffer array  
