@@ -95,6 +95,8 @@ MyCustomDataType &&a = std::move(b);
 ## Smart Pointer
 Reference: https://github.com/gpuwangge/CppAddressExperiments  
 
+## auto和decltype
+施工  
 
 # Cpp98Example
 ## 内存分区模型
