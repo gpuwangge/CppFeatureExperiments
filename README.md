@@ -95,8 +95,36 @@ MyCustomDataType &&a = std::move(b);
 ## Smart Pointer
 Reference: https://github.com/gpuwangge/CppAddressExperiments  
 
-## auto和decltype
-施工  
+## auto和decltype  
+auto 关键字用于根据初始化表达式的值来推导变量的类型。  
+```c++
+auto x = 10;        // x 是 int
+auto y = 3.14;      // y 是 double
+auto z = x + y;     // z 是 double（因为 x + y 的结果是 double）
+```
+
+decltype 是用于获取一个表达式的类型，而不是值。  
+```c++
+int a = 5;
+decltype(a) b = a;   // b 是 int
+decltype((a)) c = a; // c 是 int&，因为 (a) 是左值表达式
+```
+
+decltype在模板中的用处  
+```c++
+template<typename T, typename U>
+void multiply_and_print(T a, U b) {
+    decltype(a * b) result = a * b;
+    std::cout << result << std::endl;
+}
+```
+这样你不需要手动声明 result 是 int、float、double、还是其他什么类型。  
+上面也可以替换成auto result = a * b;  
+区别是decltype可以精确获取表达式的“完整类型”（包括引用、const）  
+
+## 转发函数（std::forward）
+施工中
+
 
 # Cpp98Example
 ## 内存分区模型
