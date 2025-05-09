@@ -123,7 +123,59 @@ void multiply_and_print(T a, U b) {
 区别是decltype可以精确获取表达式的“完整类型”（包括引用、const）  
 
 ## 转发函数（std::forward）
-施工中
+完美转发是 C++ 中一个重要的高级技巧，主要用于 模板函数中保持参数的精确类型和引用性（包括左值/右值、const 等），避免拷贝，提高效率。  
+
+完美转发的核心问题：在模板中，我们经常写一个“包装函数”，把参数传给另一个函数，但如果不小心，左值会变成右值，右值变成拷贝。所以我们需要完美保留调用者传入的“类型+引用性”。  
+解决方案：使用 std::forward + T&&  
+完美转发函数模板的写法：  
+```c++
+Copy code
+#include <iostream>
+#include <utility>  // for std::forward
+
+// 目标函数（可以接受左值或右值）
+void process(int& x) {
+    std::cout << "Lvalue reference\n";
+}
+void process(int&& x) {
+    std::cout << "Rvalue reference\n";
+}
+
+// 转发函数模板
+template<typename T>
+void forwardToProcess(T&& arg) {
+    process(std::forward<T>(arg));  // 完美转发
+}
+```
+
+使用示例：
+```c++
+int main() {
+    int a = 10;
+
+    forwardToProcess(a);        // 输出：Lvalue reference
+    forwardToProcess(42);       // 输出：Rvalue reference
+}
+```
+什么这样写？  
+🔸 T&& arg 是所谓的 万能引用（forwarding reference）  
+当传左值时，T 推导为 int&，所以 T&& 变成 int& && → int&  
+
+当传右值时，T 推导为 int，所以 T&& 就是 int&&  
+
+🔸 std::forward<T>(arg)  
+这个函数会根据 T 是左值还是右值 有条件地做引用转换  
+
+它的作用是：让 arg 保持调用时的值类别（左值或右值）  
+
+如果不使用 std::forward 会发生什么？  
+```c++
+template<typename T>
+void badForward(T&& arg) {
+    process(arg);  // 总是把 arg 当成左值
+}
+```
+无论你传什么进去，arg 是一个变量 → 永远是左值 → process(int&) 总会被调用。  
 
 
 # Cpp98Example
