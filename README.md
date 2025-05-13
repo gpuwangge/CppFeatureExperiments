@@ -178,6 +178,18 @@ void badForward(T&& arg) {
 ```
 无论你传什么进去，arg 是一个变量 → 永远是左值 → process(int&) 总会被调用。  
 
+## constexpr
+constexpr（constant expression）表示“常量表达式”，用于修饰函数或变量，要求它们的值在编译期间就可以确定。  
+```c++
+constexpr int size = 10;
+int arr[size];  // 编译时大小数组，合法  
+```
+🆚 const vs constexpr  
+对比项		const		constexpr  
+求值时间		运行时或编译时	编译时  
+适用对象		变量		变量、函数、构造函数等  
+函数修饰		不支持		支持  
+是否必须编译期	否（可能是运行期）是（表达式必须能在编译时求值）  
 
 # Cpp98Example
 ## 内存分区模型
