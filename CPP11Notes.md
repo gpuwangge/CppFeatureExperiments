@@ -271,30 +271,55 @@ auto function_name(parameter_list) -> return_type {
 }
 ```
 和传统写法相比，尾返回类型把返回值类型从前面移到了后面。  
-传统写法：  
-```cpp
-auto function_name(parameter_list) -> return_type {
-    // function body
-}
-```
-尾返回类型写法：  
-```cpp
-auto add(int a, int b) -> int {
-    return a + b;
-}
-```
-虽然看起来没差别，但这为复杂类型表达式打下了基础。  
+传统写法：
 ```cpp
 int add(int a, int b) {
     return a + b;
 }
 ```
-尾返回类型写法：  
+尾返回类型写法：
 ```cpp
 auto add(int a, int b) -> int {
     return a + b;
 }
 ```
 虽然看起来没差别，但这为复杂类型表达式打下了基础。  
+🧠 为什么需要尾返回类型？  
+它的最大优势是：当你想让返回类型依赖于参数的类型时，尾返回型可以让你在写返回类型时“已经知道参数”。  
+例如：  
+```cpp
+template<typename T1, typename T2>
+auto add(T1 a, T2 b) -> decltype(a + b) {
+    return a + b;
+}
+```
+这里用到了 decltype(a + b) 来推导返回类型。因为参数 a 和 b 已经写完了，所以 decltype(a + b) 是合法的。  
+✨ 应用场景详解  
+1. 模板函数中使用 decltype  
+```cpp
+template<typename T1, typename T2>
+auto multiply(T1 a, T2 b) -> decltype(a * b) {
+    return a * b;
+}
+```
+如果用传统写法，就必须提前知道 a * b 的类型，但参数还没出现，编译器不知道你要干嘛。  
+2. 与 auto 配合实现类型推导  
+```cpp
+auto get_value() -> int {
+    return 42;
+}
+```
+这在写泛型代码时统一语法风格、支持复杂返回类型时非常有用。  
+3. 在类中配合模板和类型别名  
+```cpp
+template<typename T>
+class Wrapper {
+    T value;
+public:
+    auto get() const -> const T& {
+        return value;
+    }
+};
+```
 
 
