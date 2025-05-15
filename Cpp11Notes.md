@@ -170,7 +170,7 @@ void badForward(T&& arg) {
 ```
 无论你传什么进去，arg 是一个变量 → 永远是左值 → process(int&) 总会被调用。  
 
-## constexpr
+# constexpr
 constexpr（constant expression）表示“常量表达式”，用于修饰函数或变量，要求它们的值在编译期间就可以确定。  
 ```c++
 constexpr int size = 10;
@@ -184,7 +184,7 @@ int arr[size];  // 编译时大小数组，合法
 函数修饰		不支持		支持  
 是否必须编译期	否（可能是运行期）是（表达式必须能在编译时求值）  
 ```
-## Lambda表达式
+# Lambda表达式
 Lambda 表达式是 一个可以定义在表达式中的匿名函数对象，语法如下：  
 ```c++
 [capture](parameter_list) -> return_type {
