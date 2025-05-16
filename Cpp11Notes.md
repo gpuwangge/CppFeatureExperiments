@@ -321,4 +321,64 @@ public:
 };
 ```
 
+# 委托构造函数（Delegating Constructors）
+委托构造函数就是一个构造函数调用类中另一个构造函数，来复用已有的初始化逻辑。  
+以前（C++11 之前），构造函数之间不能互相调用，只能通过提取公共初始化代码到私有函数来间接实现。  
+举个例子（没有委托构造函数的写法）  
+```cpp
+class Person {
+public:
+    Person() {
+        name = "Unknown";
+        age = 0;
+    }
+
+    Person(std::string n) {
+        name = n;
+        age = 0;
+    }
+
+    Person(std::string n, int a) {
+        name = n;
+        age = a;
+    }
+
+private:
+    std::string name;
+    int age;
+};
+```
+使用委托构造函数优化  
+```cpp
+class Person {
+public:
+    Person() : Person("Unknown") { }
+    Person(std::string n) : Person(n, 0) { }
+    Person(std::string n, int a) : name(n), age(a) { }
+private:
+    std::string name;
+    int age;
+};
+```
+Person() 委托给 Person(std::string)  
+Person(std::string) 委托给 Person(std::string, int)  
+最终的初始化工作由 Person(std::string, int) 完成  
+这就实现了代码复用、减少重复、提高可读性和可维护性。  
+
+注意事项（⚠️）  
+不能循环委托：即构造函数不能相互无限递归调用，否则编译失败。  
+```cpp
+Person() : Person(0) { }
+Person(int x) : Person() { } // ❌ 错误：无限递归
+```
+委托构造函数不能访问非静态成员变量，直到被委托的构造函数完成（因为对象还没完全初始化）。  
+委托构造函数也可以和继承、成员初始化等一起使用，但要注意顺序。  
+
+适用场景  
+委托构造函数特别适合：  
+有多个构造函数有部分重复逻辑  
+想要定义“默认参数”的构造行为（但不使用默认参数语法）  
+构造逻辑复杂，希望复用核心构造逻辑  
+
+
 
