@@ -513,14 +513,6 @@ int main() {
 ```
 
 nullptr 的优点  
-```
-特性	                NULL	    0	        nullptr
-类型	                int	        int	        std::nullptr_t
-类型安全	                ❌ 否	    ❌ 否	    ✅ 是
-可用于指针重载选择       ❌ 不安全    ❌ 不安全	✅ 正确选择
-模板推导友好             ❌ 否	    ❌ 否	    ✅ 是
-```
-
 | 特性 | NULL | 0 | nullptr |
 |-------|-------|-------|------|
 | 类型 | int | int | std::nullptr_t |
