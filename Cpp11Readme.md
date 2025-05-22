@@ -380,5 +380,100 @@ Person(int x) : Person() { } // ❌ 错误：无限递归
 想要定义“默认参数”的构造行为（但不使用默认参数语法）  
 构造逻辑复杂，希望复用核心构造逻辑  
 
+#  默认函数（= default）和删除函数（= delete） 
+✅ 一、默认函数（= default）  
+🔹 概念：  
+告诉编译器：“我希望使用该函数的默认实现”，即便我声明了它。  
 
+🔹 使用场景：
+你希望显式说明：我没有手动写实现，但我确实希望使用默认的行为。  
+与其他特性共用（比如构造函数被声明了另一个版本，导致默认构造函数不再自动生成）。  
+
+🔹 示例：  
+```cpp
+class Person {
+public:
+    Person() = default;                   // 使用编译器默认的构造函数
+    Person(const Person&) = default;      // 使用默认拷贝构造函数
+    Person& operator=(const Person&) = default; // 使用默认赋值操作
+    ~Person() = default;                  // 默认析构函数
+
+private:
+    std::string name;
+    int age;
+};
+```
+
+✅ 优势：  
+代码更清晰  
+更易于维护  
+编译器可以生成比你手写更高效的代码（尤其是 trivial 类型）  
+
+✅ 二、删除函数（= delete）  
+🔹 概念：  
+告诉编译器：“禁止这个函数被调用”，即使它本来可以被自动生成。  
+
+🔹 使用场景：  
+禁止拷贝/移动：  
+```cpp
+class NoCopy {
+public:
+    NoCopy() = default;
+    NoCopy(const NoCopy&) = delete;
+    NoCopy& operator=(const NoCopy&) = delete;
+};
+```
+禁止某些类型的隐式转换或不希望使用的重载：  
+```cpp
+void func(int) = delete;
+void func(double); // 只允许 double
+```
+禁止默认构造：  
+```cpp
+class OnlyWithArgs {
+public:
+    OnlyWithArgs(int x) { }
+    OnlyWithArgs() = delete; // 不允许无参构造
+};
+```
+🔹 示例：  
+```cpp
+class Singleton {
+public:
+    Singleton(const Singleton&) = delete;
+    Singleton& operator=(const Singleton&) = delete;
+
+    static Singleton& getInstance() {
+        static Singleton instance;
+        return instance;
+    }
+
+private:
+    Singleton() = default;  // 允许私有构造
+};
+```
+
+✅ 三、对比总结：default vs delete  
+```
+特性	= default	                    = delete  
+作用	使用编译器默认生成的函数	        明确禁止函数的使用  
+常用位置	构造函数、拷贝/移动构造、赋值操作	同上，以及普通函数  
+编译行为	编译器提供默认实现	            编译器报错禁止调用  
+```
+
+✅ 四、特别注意  
+= default 和 = delete 只能用于类成员函数（包括构造/析构/运算符重载）或普通函数。  
+不适用于变量或非函数声明。  
+它们的使用可以与 C++ 的其他控制机制（如私有构造、继承、模板）联合使用来构建更加安全的类型。  
+
+✅ 五、扩展应用：配合模板与 SFINAE  
+```cpp
+template<typename T>
+void process(T) = delete; // 通用模板被删除
+
+void process(int x) {
+    // 只允许 int 类型
+}
+```
+这种做法可用于强制特定类型才可调用函数，提高类型安全。  
 
