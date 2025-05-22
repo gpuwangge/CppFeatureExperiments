@@ -477,3 +477,110 @@ void process(int x) {
 ```
 这种做法可用于强制特定类型才可调用函数，提高类型安全。  
 
+# 空指针常量 nullptr
+C++11 引入的 nullptr 是一种专门的空指针字面量（literal），用于代替传统的 NULL 或 0，表示一个空指针值。  
+它的类型是：  
+```cpp
+std::nullptr_t
+```
+
+为什么引入 nullptr？  
+🔶 C++98/03 中的问题：  
+在旧的 C++ 中，常用 NULL 或 0 表示空指针：  
+```cpp
+void func(int);
+void func(char*);
+
+func(NULL); // 问题：到底调用哪个？
+```
+在大多数实现中：  
+```cpp
+#define NULL 0
+```
+所以实际上 func(NULL) 变成了 func(0) —— 编译器倾向于调用 func(int)，这可能不是你想要的效果。
+🔶 示例问题：  
+```cpp
+#include <iostream>
+
+void func(int) { std::cout << "int\n"; }
+void func(char*) { std::cout << "char*\n"; }
+
+int main() {
+    func(NULL);    // 输出 int ✅（但我们想要 char* ❌）
+    func(0);       // 也是 int
+    func(nullptr); // 输出 char* ✅
+}
+```
+
+nullptr 的优点  
+```
+特性	            NULL	    0	        nullptr
+类型	            int	        int	        std::nullptr_t
+类型安全	            ❌ 否	    ❌ 否	    ✅ 是
+可用于指针重载选择	❌不安全    ❌ 不安全	✅ 正确选择
+模板推导友好	        ❌ 否	    ❌ 否	    ✅ 是
+```
+
+nullptr 的行为和语法示例  
+🔹 基本用法：  
+```cpp
+int* p1 = nullptr;
+double* p2 = nullptr;
+
+if (p1 == nullptr) {
+    std::cout << "p1 is null\n";
+}
+```
+🔹 函数重载（避免歧义）：  
+```cpp
+void f(int);
+void f(void*);
+
+f(nullptr); // 调用 void* 版本（正确！）
+```
+
+与模板配合：  
+```cpp
+template<typename T>
+void test(T val) {
+    std::cout << typeid(val).name() << "\n";
+}
+
+int main() {
+    test(nullptr); // T 被推导为 std::nullptr_t
+}
+```
+🔹 std::nullptr_t 是什么？  
+nullptr 的类型是 std::nullptr_t，定义在头文件 <cstddef> 中：  
+```cpp
+#include <cstddef>
+
+std::nullptr_t np = nullptr; // OK
+```
+它唯一能隐式转换的目标类型是任意类型的指针（包括成员指针）。  
+
+类型转换规则  
+```cpp
+int* p = nullptr;    // OK
+int n = nullptr;     // ❌ 编译错误
+```
+也就是说：  
+nullptr 可以自动转换为任意类型的指针  
+但不能转换为整型，所以它比 0 和 NULL 更类型安全  
+
+对比示例总结  
+```cpp
+void func(int);
+void func(char*);
+
+func(0);        // 调用 func(int)
+func(NULL);     // 调用 func(int)，因为 NULL 是 0
+func(nullptr);  // 调用 func(char*)
+```
+
+最佳实践建议  
+在现代 C++ 中，始终使用 nullptr 代替 NULL 和 0 来表示空指针。  
+将 NULL 视为历史遗留，不应在新代码中继续使用。  
+
+
+
