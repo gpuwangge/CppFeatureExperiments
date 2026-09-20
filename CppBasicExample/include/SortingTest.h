@@ -17,48 +17,48 @@ void BinarySearch(int *a, int lower, int upper, int target);
 
 
 void SortingTest(){   
-    cout << "=====Sorting Test=====" << endl;
+    std::cout << "=====Sorting Test=====" << std::endl;
 
-    cout<<"Input:";
+    std::cout<<"Input:";
     int i,j;int temp;
-    for(i=0;i<MAX;i++)cout<<b[i]<<" "; cout<<endl;  
+    for(i=0;i<MAX;i++)std::cout<<b[i]<<" "; std::cout<<std::endl;  
      
     //------------------------------------
-    cout<<"Bubble sort, stable, average O(n*n), worst O(n*n), best O(n) "<<endl;
+    std::cout<<"Bubble sort, stable, average O(n*n), worst O(n*n), best O(n) "<<std::endl;
     seta(a);
     for(i=0;i<(MAX-1);i++)
        for(j=0;j<(MAX-1-i);j++)
          if(a[j]>a[j+1]){temp=a[j];a[j]=a[j+1];a[j+1]=temp;}
-    cout<<"Bubble sort result:";
-    for(i=0;i<MAX;i++)cout<<a[i]<<" ";  
-    cout<<endl; 
+    std::cout<<"Bubble sort result:";
+    for(i=0;i<MAX;i++)std::cout<<a[i]<<" ";  
+    std::cout<<std::endl; 
     //---------------------------------
-    cout<<"Quick sort, divide and conquer, use extra storage, not stable. average O(n*logn), worst O(n*n), best O(n*logn) "<<endl;
+    std::cout<<"Quick sort, divide and conquer, use extra storage, not stable. average O(n*logn), worst O(n*n), best O(n*logn) "<<std::endl;
     seta(a);
     qsort(a,0,MAX-1); //Recursive
-    cout<<"Quick sort result:";
-    for(i=0;i<MAX;i++)cout<<a[i]<<" ";
-    cout<<endl;
+    std::cout<<"Quick sort result:";
+    for(i=0;i<MAX;i++)std::cout<<a[i]<<" ";
+    std::cout<<std::endl;
     //-------------------------------------
-    cout<<"Insert sort, simple and stable. average O(n*n), worst O(n*n), best O(n) "<<endl;
+    std::cout<<"Insert sort, simple and stable. average O(n*n), worst O(n*n), best O(n) "<<std::endl;
     seta(a);
     insertionSort(a);
-    cout<<"Insert sort result:";
-    for(i=0;i<MAX;i++)cout<<a[i]<<" ";  
-    cout<<endl;  
+    std::cout<<"Insert sort result:";
+    for(i=0;i<MAX;i++)std::cout<<a[i]<<" ";  
+    std::cout<<std::endl;  
     //------------------------------------
     //Not implemented: selection sort, simple, all time is O(n*n). 1. compare two elements; 2. swap elements
     //-----------------------------
     //Not implemented: Heap sort, O(n*logn)
     //------------------------- 
-    cout<<"Merge sort, all time is O(n*logn), need extra storage O(n), stable"<<endl;
+    std::cout<<"Merge sort, all time is O(n*logn), need extra storage O(n), stable"<<std::endl;
     seta(a);
     MergeSort(a); //Recursive
-    cout<<"Merge sort result:";
-    for(i=0;i<MAX;i++)cout<<a[i]<<" ";
-    cout<<endl;
+    std::cout<<"Merge sort result:";
+    for(i=0;i<MAX;i++)std::cout<<a[i]<<" ";
+    std::cout<<std::endl;
     //------------------------------------------------------------------------------
-    cout<<endl;
+    std::cout<<std::endl;
 } 
 
 
@@ -135,9 +135,9 @@ void qsort(int a[], int start, int end){
 		while(a[i] < a[start] && i!=end)i++; 
 		while(a[j] > a[start] && j!=start)j--; 
 		if(i >= j) break;
-		swap(a[i], a[j]); 
+		std::swap(a[i], a[j]); 
 	}
-	swap(a[start], a[i]);//insert main element into i(or j) pos
+	std::swap(a[start], a[i]);//insert main element into i(or j) pos
 	qsort(a, start, i-1);//then use new i(or j) to divide into two half
 	qsort(a, i+1, end);
 }  

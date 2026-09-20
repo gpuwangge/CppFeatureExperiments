@@ -53,7 +53,7 @@ public:
 /*Binary Max Heap*/
 class Heap{
 public:	
-	vector<HeapNode> nodes; 
+	std::vector<HeapNode> nodes; 
 	int size;
 	Heap(){
 		size = 0;
@@ -65,15 +65,15 @@ public:
 	}
 
 	void Tranverse(){
-		cout<<"Traverse "<<endl;;
+		std::cout<<"Traverse "<<std::endl;;
 		for(int i = 0; i < size; i++){
-			cout<<nodes[i].value<<" ";
-			//if(i == 0) cout<<endl;
-			//if(i == 2) cout<<endl;
-			//if(i == 6) cout<<endl;
-			//if(i == 14) cout<<endl;
+			std::cout<<nodes[i].value<<" ";
+			//if(i == 0) std::cout<<std::endl;
+			//if(i == 2) std::cout<<std::endl;
+			//if(i == 6) std::cout<<std::endl;
+			//if(i == 14) std::cout<<std::endl;
 		}
-		cout<<endl;
+		std::cout<<std::endl;
 	}
 
 	int GetParentIndex(int index){
@@ -213,21 +213,21 @@ public:
 	}
 
 	void PreorderTranversal(){
-		cout<<value<<" ";
+		std::cout<<value<<" ";
 		if(LChild != NULL) LChild->PreorderTranversal();
 		if(RChild != NULL) RChild->PreorderTranversal();
 	}
 
 	void InorderTranversal(){
 		if(LChild != NULL) LChild->InorderTranversal();
-		cout<<value<<" ";
+		std::cout<<value<<" ";
 		if(RChild != NULL) RChild->InorderTranversal();
 	}
 
 	void PostorderTranversal(){	
 		if(LChild != NULL) LChild->PostorderTranversal();
 		if(RChild != NULL) RChild->PostorderTranversal();
-		cout<<value<<" ";
+		std::cout<<value<<" ";
 	}
 };
 
@@ -235,7 +235,7 @@ public:
 class Node{
 public:
 	int value;
-	list<Node> children;
+	std::list<Node> children;
 	bool visited;
 	Node(int _value){
 		value = _value;
@@ -248,7 +248,7 @@ public:
 		return children.size();
 	}
 	Node* GetChild(int index){
-		list<Node>::iterator iter = children.begin();
+		std::list<Node>::iterator iter = children.begin();
 		for(int i = 0; i < ChildrenCount(); i++, iter++){
 			if(i==index){
 				return &(*iter);
@@ -258,7 +258,7 @@ public:
 	}
 
 	Node* GetLeft(){
-		list<Node>::iterator iter = children.begin();
+		std::list<Node>::iterator iter = children.begin();
 		if(iter!=children.end()){
 			return &(*iter);
 		}
@@ -266,7 +266,7 @@ public:
 	}
 
 	Node* GetRight(){
-		list<Node>::iterator iter = children.begin();
+		std::list<Node>::iterator iter = children.begin();
 		if(iter!=children.end()){
 			iter++;
 			if(iter!=children.end()){
@@ -277,8 +277,8 @@ public:
 	}
 
 	void PreorderTranversal(){//m->l->r
-		cout<<value<<" ";
-		for(list<Node>::iterator iter = children.begin();
+		std::cout<<value<<" ";
+		for(std::list<Node>::iterator iter = children.begin();
 			iter != children.end(); iter++){
 			(*iter).PreorderTranversal();
 		}
@@ -288,35 +288,35 @@ public:
 		Node *L = GetLeft();
 		if(L!= NULL) L->InorderTranversal();
 		
-		cout<<value<<" ";
+		std::cout<<value<<" ";
 
 		Node *R= GetRight();
 		if(R!= NULL) R->InorderTranversal();
 	}
 	void PostorderTranversal(){//l->r->m
-		for(list<Node>::iterator iter = children.begin();
+		for(std::list<Node>::iterator iter = children.begin();
 			iter != children.end(); iter++){
 			(*iter).PostorderTranversal();
 		}
-		cout<<value<<" ";
+		std::cout<<value<<" ";
 	}
 	
 };
 
-list<Node> stack;
+std::list<Node> stack;
 
 void BFSLoop(){
 	if(stack.size() != 0){
-		list<Node>::iterator xiter = stack.begin();
+		std::list<Node>::iterator xiter = stack.begin();
 		Node x(0);
 		x = *xiter;
 
-		cout<<x.value<<" ";
+		std::cout<<x.value<<" ";
 		x.visited = true;
 
 		stack.pop_front();
 
-		for(list<Node>::iterator iter = x.children.begin();iter!= x.children.end(); iter++){
+		for(std::list<Node>::iterator iter = x.children.begin();iter!= x.children.end(); iter++){
 			if((*iter).visited == false)
 				stack.push_back(*iter);
 		}
@@ -333,16 +333,16 @@ void BFS(Node x){
 
 void DFSLoop(){
 	if(stack.size() != 0){
-		list<Node>::iterator xiter = stack.begin();
+		std::list<Node>::iterator xiter = stack.begin();
 		Node x(0);
 		x = *xiter;
 
-		cout<<x.value<<" ";
+		std::cout<<x.value<<" ";
 		x.visited = true;
 
 		stack.pop_front();
 
-		for(list<Node>::iterator iter = x.children.begin();iter!= x.children.end(); iter++){
+		for(std::list<Node>::iterator iter = x.children.begin();iter!= x.children.end(); iter++){
 			if((*iter).visited == false){
 				stack.push_back(*iter);
 				DFSLoop();
@@ -358,45 +358,45 @@ void DFS(Node x){
 }
 
 void PrintAll(BinaryNode root){
-	cout<<"PreorderTranversal"<<endl;
+	std::cout<<"PreorderTranversal"<<std::endl;
 	root.PreorderTranversal();
-	cout<<endl;
+	std::cout<<std::endl;
 
-	cout<<"InorderTranversal"<<endl;
+	std::cout<<"InorderTranversal"<<std::endl;
 	root.InorderTranversal();
-	cout<<endl;
+	std::cout<<std::endl;
 
-	cout<<"PostorderTranversal"<<endl;
+	std::cout<<"PostorderTranversal"<<std::endl;
 	root.PostorderTranversal();
-	cout<<endl;
+	std::cout<<std::endl;
 }
 
 void PrintAll(Node root){
-	cout<<"PreorderTranversal"<<endl;
+	std::cout<<"PreorderTranversal"<<std::endl;
 	root.PreorderTranversal();
-	cout<<endl;
+	std::cout<<std::endl;
 
-	cout<<"InorderTranversal"<<endl;
+	std::cout<<"InorderTranversal"<<std::endl;
 	root.InorderTranversal();
-	cout<<endl;
+	std::cout<<std::endl;
 
-	cout<<"PostorderTranversal"<<endl;
+	std::cout<<"PostorderTranversal"<<std::endl;
 	root.PostorderTranversal();
-	cout<<endl;
+	std::cout<<std::endl;
 
-	cout<<"BFS"<<endl;
+	std::cout<<"BFS"<<std::endl;
 	BFS(root);
-	cout<<endl;
+	std::cout<<std::endl;
 
-	cout<<"DFS"<<endl;
+	std::cout<<"DFS"<<std::endl;
 	DFS(root);
-	cout<<endl;
+	std::cout<<std::endl;
 }
 
 void TreeTest(){
-	cout << "=====Tree Test=====" << endl;
+	std::cout << "=====Tree Test=====" << std::endl;
 
-	cout<<"General tree:"<<endl;
+	std::cout<<"General tree:"<<std::endl;
 	Node root(0);
 	root.AddChild(1);
 	root.AddChild(2);
@@ -407,10 +407,10 @@ void TreeTest(){
 	root.GetChild(0)->GetChild(0)->AddChild(7);
 	PrintAll(root);
 
-	cout<<endl;
+	std::cout<<std::endl;
 
 	//=============================================
-	cout<<"Binary Search tree:"<<endl;
+	std::cout<<"Binary Search tree:"<<std::endl;
 
 	srand(45);
 
@@ -420,10 +420,10 @@ void TreeTest(){
 	}
 	PrintAll(binaryRoot);
 
-	cout<<endl;
+	std::cout<<std::endl;
 	
 	//===============================================
-	cout<<"Heap: "<<endl;
+	std::cout<<"Heap: "<<std::endl;
 	Heap heap;
 	for(int i =0;i < 20; i++){
 		heap.AddNode(rand()%100);
@@ -431,13 +431,13 @@ void TreeTest(){
 	heap.Tranverse();
 	heap.BuildHeap();
 	heap.Tranverse();
-	cout<<"Sort"<<endl;
+	std::cout<<"Sort"<<std::endl;
 	for(int i = 0; i < 19; i++){
-		cout<<heap.Sort()<<" ";
+		std::cout<<heap.Sort()<<" ";
 	}
-	cout<<endl;
+	std::cout<<std::endl;
 	heap.Tranverse();
-	cout<<endl;
+	std::cout<<std::endl;
 	
 }
 

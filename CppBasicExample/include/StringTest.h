@@ -8,65 +8,65 @@
 
 
 void CStyleString(){
-	cout<<"CStyleString"<<endl;
+	std::cout<<"CStyleString"<<std::endl;
 
-	cout<<"Length and Index Test:"<<endl;
+	std::cout<<"Length and Index Test:"<<std::endl;
 	char str[] = "123";
-	cout<<"strlen: "<<strlen(str)<<endl;;
+	std::cout<<"strlen: "<<strlen(str)<<std::endl;;
 	for(int i = 0; i< strlen(str);i++){
-		cout<<i<<":"<<str[i]<<endl; 
+		std::cout<<i<<":"<<str[i]<<std::endl; 
 	}
 
-	cout<<"Compare Test"<<endl;
+	std::cout<<"Compare Test"<<std::endl;
 	char *str2 = new char[10];
 	str2[0] = '3';
 	str2[1] = '\0';
 	for(int i = 0; i< strlen(str2);i++){
-		cout<<i<<":"<<str2[i]<<endl; 
+		std::cout<<i<<":"<<str2[i]<<std::endl; 
 	}
-	cout<<"Compare: "<<strcmp(str, str2)<<endl;//non zero is not equal
+	std::cout<<"Compare: "<<strcmp(str, str2)<<std::endl;//non zero is not equal
 
 
-	cout<<"Copy Test:"<<endl;
+	std::cout<<"Copy Test:"<<std::endl;
 	strcpy(str2, str);
 	for(int i = 0; i< strlen(str2);i++){
-		cout<<i<<":"<<str2[i]<<endl; 
+		std::cout<<i<<":"<<str2[i]<<std::endl; 
 	}
-	cout<<"Compare: "<<strcmp(str, str2)<<endl;// zero means equal
+	std::cout<<"Compare: "<<strcmp(str, str2)<<std::endl;// zero means equal
 
 	
 }
 
 void CPlusStyleString(){
-	cout<<"CPlusStyleString"<<endl;
+	std::cout<<"CPlusStyleString"<<std::endl;
 
-	cout<<"Length and Index Test:"<<endl;
-	string str;
-	cout<<str.empty()<<endl;
+	std::cout<<"Length and Index Test:"<<std::endl;
+	std::string str;
+	std::cout<<str.empty()<<std::endl;
 	str = "sdfawe";
-	cout<<str.empty()<<endl;
+	std::cout<<str.empty()<<std::endl;
 	str = "xv33";
-	cout<<"strlen: "<<str.size()<<endl;;
+	std::cout<<"strlen: "<<str.size()<<std::endl;;
 	for(int i = 0; i< str.size();i++){
-		cout<<i<<":"<<str[i]<<endl;
+		std::cout<<i<<":"<<str[i]<<std::endl;
 	}
 
 
-	cout<<"Compare Test:"<<endl;
-	string str2;
+	std::cout<<"Compare Test:"<<std::endl;
+	std::string str2;
 	str2 = "fawe";
 	for(int i = 0; i< str2.size();i++){
-		cout<<i<<":"<<str2[i]<<endl;
+		std::cout<<i<<":"<<str2[i]<<std::endl;
 	}
-	cout<<"Compare: "<<str.compare(str2)<<endl;
+	std::cout<<"Compare: "<<str.compare(str2)<<std::endl;
 
 
-	cout<<"Copy Test:"<<endl;
+	std::cout<<"Copy Test:"<<std::endl;
 	str2 = str;
 	for(int i = 0; i< str2.size();i++){
-		cout<<i<<":"<<str2[i]<<endl;
+		std::cout<<i<<":"<<str2[i]<<std::endl;
 	}
-	cout<<"Compare: "<<str.compare(str2)<<endl;// zero means equal
+	std::cout<<"Compare: "<<str.compare(str2)<<std::endl;// zero means equal
 }
 
 
@@ -119,33 +119,33 @@ void Reverse(const char *s, char *output){//buggy?
 }
 
 void StringTest(){
-	cout << "=====String Test=====" << endl;
+	std::cout << "=====String Test=====" << std::endl;
 
 	CStyleString();
-	cout<<endl;
+	std::cout<<std::endl;
 	CPlusStyleString();
-	cout<<endl;
+	std::cout<<std::endl;
 
-	cout<<"My strcpy"<<endl;
+	std::cout<<"My strcpy"<<std::endl;
 	char source[] = "Input";
 	char *destination;
 	destination = new char[strlen(source)];
 	MyStrcpy(source, destination);
 	for(int i = 0; i < strlen(destination); i++){
-		cout<<destination[i];
+		std::cout<<destination[i];
 	}
-	cout<<endl;
+	std::cout<<std::endl;
 
-	cout<<"My strcmp"<<endl;
-	cout<<MyStrcmp(source,destination)<<endl;
+	std::cout<<"My strcmp"<<std::endl;
+	std::cout<<MyStrcmp(source,destination)<<std::endl;
 	char diff[] = "Another";
-	cout<<MyStrcmp(source,diff)<<endl;
-	cout<<endl;
+	std::cout<<MyStrcmp(source,diff)<<std::endl;
+	std::cout<<std::endl;
 
-	cout<<"My strlen"<<endl;
+	std::cout<<"My strlen"<<std::endl;
 	for(int j = 0; j < strlen(diff); j++)
-			cout<<diff[j];
-	cout<<MyStrLen(diff)<<endl;
+			std::cout<<diff[j];
+	std::cout<<MyStrLen(diff)<<std::endl;
 
 
 
@@ -157,19 +157,19 @@ void StringTest(){
 		Uniformity is sometimes difficult to ensure by design but may\
 		be evaluated empirically using statistical tests eg a Pearsons \
 		chisquared test for discrete uniform distributions";
-	cout<<"Reverse Test"<<endl;
+	std::cout<<"Reverse Test"<<std::endl;
 	for(int i =0; i< strlen(text); i++){
-		cout<<text[i];
+		std::cout<<text[i];
 	}
-	cout<<endl;
+	std::cout<<std::endl;
 	char* output = new char[strlen(text)];
 	Reverse(text, output);
 	for(int i =0; i< strlen(output); i++){
-		cout<<output[i];
+		std::cout<<output[i];
 	}
-	cout<<endl;
+	std::cout<<std::endl;
 
-	cout<<endl;
+	std::cout<<std::endl;
 }
 
 #endif

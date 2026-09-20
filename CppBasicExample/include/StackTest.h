@@ -78,62 +78,62 @@ public:
 	}
 
 	void PrintAll(){
-		cout<<"Print all:"<<endl;
+		std::cout<<"Print all:"<<std::endl;
 		StackNode *headCopy = head;
 		while(head->next!=NULL){
-			cout<<head->next->value<<" ";
+			std::cout<<head->next->value<<" ";
 			head = head->next;
 		}
-		cout<<endl;
+		std::cout<<std::endl;
 		head = headCopy;
 	}
 };
 
 void StackTest(){
-	cout << "=====Stack Test=====" << endl;
+	std::cout << "=====Stack Test=====" << std::endl;
 
 	Stack stack;
 	
-	cout<<"Input sequence:"<<endl;
+	std::cout<<"Input sequence:"<<std::endl;
 	for(int i = 0; i < 10; i ++){
 		stack.Push(i*100);
-		cout<<i*100<<" ";
+		std::cout<<i*100<<" ";
 	}
-	cout<<endl;
+	std::cout<<std::endl;
 
-	cout<<"Pop test;"<<endl;
+	std::cout<<"Pop test;"<<std::endl;
 	int returnValue;
 	while((returnValue = stack.Pop()) != EMPTY)
-		cout<<returnValue<<" ";
-	cout<<"Over"<<endl;
+		std::cout<<returnValue<<" ";
+	std::cout<<"Over"<<std::endl;
 
-	cout<<"Pop test2;"<<endl;
+	std::cout<<"Pop test2;"<<std::endl;
 	while((returnValue = stack.Pop()) != EMPTY)
-		cout<<returnValue<<" ";
-	cout<<"Over"<<endl;
+		std::cout<<returnValue<<" ";
+	std::cout<<"Over"<<std::endl;
 
 	//---------------------
 
-	cout<<"Queue test:"<<endl;
+	std::cout<<"Queue test:"<<std::endl;
 	Queue queue;
-	cout<<"Input sequence:"<<endl;
+	std::cout<<"Input sequence:"<<std::endl;
 	for(int i = 0; i < 10; i ++){
 		queue.Enqueue(i*100+i);
-		cout<<i*100+i<<" ";
+		std::cout<<i*100+i<<" ";
 	}
-	cout<<endl;
+	std::cout<<std::endl;
 
-	cout<<"Dequeue test;"<<endl;
+	std::cout<<"Dequeue test;"<<std::endl;
 	while((returnValue = queue.Dequeue()) != EMPTY)
-		cout<<returnValue<<" ";
-	cout<<"Over"<<endl;
+		std::cout<<returnValue<<" ";
+	std::cout<<"Over"<<std::endl;
 
-	cout<<"Dequeue test2;"<<endl;
+	std::cout<<"Dequeue test2;"<<std::endl;
 	while((returnValue = queue.Dequeue()) != EMPTY)
-		cout<<returnValue<<" ";
-	cout<<"Over"<<endl;
+		std::cout<<returnValue<<" ";
+	std::cout<<"Over"<<std::endl;
 
-	cout<<endl;
+	std::cout<<std::endl;
 
 	/*
 	010101

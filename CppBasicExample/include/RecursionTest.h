@@ -3,12 +3,12 @@
 
 #include "common.h"
 
-void DoPermute(string in, string out, bool* used, int length, int level){
+void DoPermute(std::string in, std::string out, bool* used, int length, int level){
 	if(level == length){
 		for(int i = 0; i< out.length(); i++){
-			cout<<out[i];
+			std::cout<<out[i];
 		}
-		cout<<"; ";
+		std::cout<<"; ";
 		return;
 	}
 
@@ -22,23 +22,23 @@ void DoPermute(string in, string out, bool* used, int length, int level){
 	}
 }
 
-void PermutationOfString(string s){
+void PermutationOfString(std::string s){
 	int length = s.length();
 	bool *used = new bool[length];
 	for(int i = 0; i < length; i++){
 		used[i] = false;
 	}
-	string out;
+	std::string out;
 	DoPermute(s, out, used, length, 0);
 }
 
 
-void DoCombine(string in, string out, int length, int start){
+void DoCombine(std::string in, std::string out, int length, int start){
 	for(int i = start; i < length; i++){
 		out.push_back(in[i]);
 		for(int j = 0; j < out.length(); j++)
-			cout<<out[j];
-		cout<<"; ";
+			std::cout<<out[j];
+		std::cout<<"; ";
 		if(i < length - 1){
 			DoCombine(in, out, length, i+1);
 
@@ -47,26 +47,26 @@ void DoCombine(string in, string out, int length, int start){
 	}
 }
 
-void CombineOfString(string s){
+void CombineOfString(std::string s){
 	int length = s.length();
-	string out;
+	std::string out;
 	DoCombine(s, out, length, 0);
 }
 
 
 void RecursionTest(){
-	cout << "=====Recursion Test=====" << endl;
+	std::cout << "=====Recursion Test=====" << std::endl;
 
-	cout<<"Recursion Test1 (PermutationOfString)"<<endl;
-	string s = "abcd";
+	std::cout<<"Recursion Test1 (PermutationOfString)"<<std::endl;
+	std::string s = "abcd";
 	PermutationOfString(s);
-	cout<<endl;
+	std::cout<<std::endl;
 
-	cout<<"Recursion Test2: (CombineOfString)"<<endl;
+	std::cout<<"Recursion Test2: (CombineOfString)"<<std::endl;
 	CombineOfString(s);
-	cout<<endl;
+	std::cout<<std::endl;
 
-	cout<<endl;
+	std::cout<<std::endl;
 }
 
 #endif

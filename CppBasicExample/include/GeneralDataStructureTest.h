@@ -27,38 +27,38 @@ unordered nature of its elements.
 */
 
 /*List and Hash Table*/
-void PrintHashTable(unordered_map<string, int> &hashMap){
-	cout<<"Print Hash Map: ";
-	for (const auto& pair : hashMap) cout<<"("<<pair.first<<":"<<pair.second << ") ";
-	cout<<endl;
-	cout<<"Size is:"<<hashMap.size()<<endl;
-	cout<<endl;
+void PrintHashTable(std::unordered_map<std::string, int> &hashMap){
+	std::cout<<"Print Hash Map: ";
+	for (const auto& pair : hashMap) std::cout<<"("<<pair.first<<":"<<pair.second << ") ";
+	std::cout<<std::endl;
+	std::cout<<"Size is:"<<hashMap.size()<<std::endl;
+	std::cout<<std::endl;
 }
 
 void BuildHashMap(){
-	cout<<"Build Hash Map"<<endl;
-	unordered_map<string, int> hashMap;
-	list<string> lst;
+	std::cout<<"Build Hash Map"<<std::endl;
+	std::unordered_map<std::string, int> hashMap;
+	std::list<std::string> lst;
 	for(int i = 0; i < 20; i++){
 		//cout<<i<<" ";
 		char* c= new char;
 		itoa(i,c,10);
-		string s = c;
+		std::string s = c;
 		lst.push_back(s);
-		hashMap.insert(make_pair(s, i));
+		hashMap.insert(std::make_pair(s, i));
 	}
 	PrintHashTable(hashMap);
 
-	cout<<"Add an element: hashMap[\"test\"] = 10000"<<endl;
+	std::cout<<"Add an element: hashMap[\"test\"] = 10000"<<std::endl;
 	hashMap["test"] = 10000;
 	PrintHashTable(hashMap);
 
-	cout<<"Remove the following elements(key): ";
-	for(list<string>::iterator iter = lst.begin(); iter != lst.end(); ++iter){
-		cout<<hashMap[*iter]<<" ";
+	std::cout<<"Remove the following elements(key): ";
+	for(std::list<std::string>::iterator iter = lst.begin(); iter != lst.end(); ++iter){
+		std::cout<<hashMap[*iter]<<" ";
 		hashMap.erase(*iter);
 	}
-	cout<<endl;
+	std::cout<<std::endl;
 	PrintHashTable(hashMap);
 }
 
@@ -66,41 +66,41 @@ void BuildHashMap(){
 /*Each double allocation need O(n), but happen so few so it is still O(1)*/
 /*Compare to list, no 'insert' in vector*/
 void BuildVector(){
-	cout<<"Build Vector"<<endl;
+	std::cout<<"Build Vector"<<std::endl;
 
-	vector<int> v;
+	std::vector<int> v;
 	for(int i = 0;i < 30; i++){
-		cout<<i<<" ";
+		std::cout<<i<<" ";
 		v.push_back(i);
 	}
 
-	cout<<endl;
+	std::cout<<std::endl;
 
-	cout<<"Size is: "<<v.size()<<endl;
+	std::cout<<"Size is: "<<v.size()<<std::endl;
 
-	cout<<"Pop back 10 elements from the vector"<<endl;
+	std::cout<<"Pop back 10 elements from the vector"<<std::endl;
 	for(int i = 0;i < 10; i++) v.pop_back();
-	for(int i = 0;i < v.size(); i++) cout<<v[i]<<" ";
-	cout<<"Size is: "<<v.size()<<endl;
-	cout<<endl;
+	for(int i = 0;i < v.size(); i++) std::cout<<v[i]<<" ";
+	std::cout<<"Size is: "<<v.size()<<std::endl;
+	std::cout<<std::endl;
 
 }
 
 void StringBuffer(){
-	cout<<"StringBuffer: NA"<<endl;
+	std::cout<<"StringBuffer: NA"<<std::endl;
 
 	//cout<<endl;
 }
 
 
 void GeneralDataStructureTest(){
-	cout<<"=====General Data Structure Test====="<<endl;
+	std::cout<<"=====General Data Structure Test====="<<std::endl;
 
 	BuildHashMap();
 	BuildVector();
 	StringBuffer();
 
-	cout<<endl;
+	std::cout<<std::endl;
 }
 
 #endif

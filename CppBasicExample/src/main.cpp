@@ -4,7 +4,6 @@
 #include "../include/HashTableTest.h"
 #include "../include/LinkedListTest.h"
 #include "../include/MemoryTest.h"
-#include "../include/MultiThreadsTest.h"
 #include "../include/RecursionTest.h"
 #include "../include/SortingTest.h"
 #include "../include/StackTest.h"
@@ -17,7 +16,6 @@ int main(){
 	HashTableTest();
 	LinkedListTest();
 	MemoryTest();
-	//MultiThreadsTest();
 	RecursionTest();
 	SortingTest();
 	StackTest();

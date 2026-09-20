@@ -12,10 +12,10 @@ bool GetBit(int num, int i){
 
 void PrintAllBits(int num){
 	for(int i = 15 ; i >=0; i--){
-		cout<<GetBit(num,i);
-		if(i == 8) cout<< "_";
+		std::cout<<GetBit(num,i);
+		if(i == 8) std::cout<< "_";
 	}
-	cout<<endl;
+	std::cout<<std::endl;
 }
 
 int SetBit(int num, int i){
@@ -44,57 +44,57 @@ int UpdateBit(int num, int i, int v){ //merge setbit and clearbit
 }
 
 void BitOperationTest(){
-	cout<<"=====Bit Test====="<<endl;
+	std::cout<<"=====Bit Test====="<<std::endl;
 
 	int x = 2;
-	cout<<"x = "<<bitset<8>(x)<<", flip all bits ~x = "<<bitset<8>(~x)<<endl;
+	std::cout<<"x = "<<std::bitset<8>(x)<<", flip all bits ~x = "<<std::bitset<8>(~x)<<std::endl;
 
 	int y = 3;
-	cout<<"y = "<<bitset<8>(y)<<endl;
-	cout<<"x&y = "<<bitset<8>(x&y)<<", ";
-	cout<<"x|y = "<<bitset<8>(x|y)<<", ";
-	cout<<"x^y = "<<bitset<8>(x^y)<<" (if bit is different, get 1; otherwise get 0)"<<endl;
+	std::cout<<"y = "<<std::bitset<8>(y)<<std::endl;
+	std::cout<<"x&y = "<<std::bitset<8>(x&y)<<", ";
+	std::cout<<"x|y = "<<std::bitset<8>(x|y)<<", ";
+	std::cout<<"x^y = "<<std::bitset<8>(x^y)<<" (if bit is different, get 1; otherwise get 0)"<<std::endl;
 
-	cout<<"x<<1 = "<<bitset<8>(x<<1)<<endl;
-	cout<<"x>>1 = "<<bitset<8>(x>>1)<<endl;
+	std::cout<<"x<<1 = "<<std::bitset<8>(x<<1)<<std::endl;
+	std::cout<<"x>>1 = "<<std::bitset<8>(x>>1)<<std::endl;
 
-	cout<<"Swap x and y using only ^: "<<endl;
-	cout<<"  x = "<<x<<", y = "<<y<<endl;
+	std::cout<<"Swap x and y using only ^: "<<std::endl;
+	std::cout<<"  x = "<<x<<", y = "<<y<<std::endl;
 	y = x^y;
 	x = x^y;
 	y = x^y;
-	cout<<"  x = "<<x<<", y = "<<y<<endl;
+	std::cout<<"  x = "<<x<<", y = "<<y<<std::endl;
 	
 	int z = 6;
-	cout<<"z = "<<z<<" = ";
+	std::cout<<"z = "<<z<<" = ";
 	PrintAllBits(z);
 
-	cout<<"Set 3rd bit of z:"<<endl;
+	std::cout<<"Set 3rd bit of z:"<<std::endl;
 	z = SetBit(z, 3);
-	cout<<"z = "<<z<<" = ";
+	std::cout<<"z = "<<z<<" = ";
 	PrintAllBits(z);
 
-	cout<<"Clear 2nd bit of z:"<<endl;
+	std::cout<<"Clear 2nd bit of z:"<<std::endl;
 	z = ClearBit(z,2);
-	cout<<"z = "<<z<<" = ";
+	std::cout<<"z = "<<z<<" = ";
 	PrintAllBits(z);
 
-	cout<<"ClearBitMSBthroughI of z: "<<endl;
+	std::cout<<"ClearBitMSBthroughI of z: "<<std::endl;
 	z = ClearBitMSBthroughI(z,2);//clear 2 ~ 15
-	cout<<"z = "<<z<<" = ";
+	std::cout<<"z = "<<z<<" = ";
 	PrintAllBits(z);
 
-	cout<<"Update 3 from 9th bit of z:"<<endl;
+	std::cout<<"Update 3 from 9th bit of z:"<<std::endl;
 	z = UpdateBit(z, 9, 3);
-	cout<<"z = "<<z<<" = ";
+	std::cout<<"z = "<<z<<" = ";
 	PrintAllBits(z);
 
-	cout<<"ClearBitsIthough0 of z:"<<endl;
+	std::cout<<"ClearBitsIthough0 of z:"<<std::endl;
 	z = ClearBitsIthough0(z, 5);//clear 5 ~ 0
-	cout<<"z = "<<z<<" = ";
+	std::cout<<"z = "<<z<<" = ";
 	PrintAllBits(z);
 
-	cout<<endl;
+	std::cout<<std::endl;
 }
 
 #endif

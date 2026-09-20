@@ -35,10 +35,10 @@ struct DynamicHashElem{
 
 class DynamicHashTable{
 public:
-	list<DynamicHashElem> *elem;
+	std::list<DynamicHashElem> *elem;
 	char *key;
 	DynamicHashTable(){
-		elem = new list<DynamicHashElem>[13];//ASCII test: n = 13, m = 10
+		elem = new std::list<DynamicHashElem>[13];//ASCII test: n = 13, m = 10
 		key = new char[13];
 	}
 
@@ -53,7 +53,7 @@ public:
 
 	void AddPair(char _key){
 		int index = GetIndex(_key);
-		for(list<DynamicHashElem>::iterator iter = elem[index].begin(); 
+		for(std::list<DynamicHashElem>::iterator iter = elem[index].begin(); 
 			iter != elem[index].end();
 			iter++){
 			if((*iter).key == _key){
@@ -64,16 +64,16 @@ public:
 		elem[index].push_back(DynamicHashElem(_key, 1));
 	}
 
-	void PrintAll(string s){
-		cout<<"Print All: "<<s<<endl;
+	void PrintAll(std::string s){
+		std::cout<<"Print All: "<<s<<std::endl;
 		for(int i = 0; i < 13; i++){
-			for(list<DynamicHashElem>::iterator iter = elem[i].begin(); 
+			for(std::list<DynamicHashElem>::iterator iter = elem[i].begin(); 
 				iter != elem[i].end();
 				iter++){
-					cout<<"("<<(char)((*iter).key)<<","<<(*iter).count<<") ";
+					std::cout<<"("<<(char)((*iter).key)<<","<<(*iter).count<<") ";
 			}
 		}
-		cout<<endl;
+		std::cout<<std::endl;
 	}
 };
 
@@ -115,19 +115,19 @@ public:
 		}
 	}
 
-	void PrintAll(string s){
-		cout<<"Print All: "<<s<<endl;
+	void PrintAll(std::string s){
+		std::cout<<"Print All: "<<s<<std::endl;
 		for(int i = 0; i < 52; i++){
-			cout<<"("<<key[i]<<","<<value[i]<<"); ";
+			std::cout<<"("<<key[i]<<","<<value[i]<<"); ";
 		}
-		cout<<endl;
+		std::cout<<std::endl;
 	}
 
 };
 
 
 void HashTableTest(){
-	cout<<"=====Hash Table Test====="<<endl;
+	std::cout<<"=====Hash Table Test====="<<std::endl;
 
 	HashTable hashTable;
 	hashTable.PrintAll("(Empty)");
@@ -155,7 +155,7 @@ hm are essential for good hash table performan";
 			hashTable.DeletePair(text2[i]);
 	}
 	hashTable.PrintAll("(Remove text2)");
-	cout<<endl;
+	std::cout<<std::endl;
 
 	DynamicHashTable dHashTable;
 	for(int i = 0; i< strlen(text2); i++){
@@ -163,7 +163,7 @@ hm are essential for good hash table performan";
 			dHashTable.AddPair(text2[i]);
 	}
 	dHashTable.PrintAll("(Dynamic Hash Table: Add text2)");
-	cout<<endl;
+	std::cout<<std::endl;
 }
 
 

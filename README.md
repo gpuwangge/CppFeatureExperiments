@@ -5,6 +5,99 @@ Go to the project dir
 > cmake -G "MinGW Makefiles" ..  
 > make -j 
 
+# CppMultithreadExample
+进程和线程：每个进程有自己的virtual address space  
+进程的内存有：  
+- 栈：局部变量，函数参数和返回地址。进程里面的每个线程都有自己的栈。  
+- 对：动态  
+- BSS: 全局变量和静态  
+- 数据段  
+- 代码段  
+- 内核：不允许应用程序读写  
+
+## mutex
+mutex（互斥量）是 C++ 中最基础、最关键的线程同步原语之一，用来保证多线程访问共享资源时的安全性。  
+mutex的作用是：同一时间只允许一个线程进入临界区（critical section），避免数据竞争（data race）。  
+一个简单的例子：  
+```
+#include <iostream>
+#include <thread>
+#include <mutex>
+
+int counter = 0;        // 共享变量
+std::mutex m;           // 互斥量
+
+void add() {
+    std::lock_guard<std::mutex> lock(m);  // 自动加锁、自动解锁
+    counter++;                            // 临界区：只能一个线程进入
+}
+
+int main() {
+    std::thread t1(add);
+    std::thread t2(add);
+
+    t1.join(); //让当前线程阻塞，直到目标线程执行结束。主线程（main()）停在这里不往下执行。等 t1 完成。
+    t2.join(); //再等 t2 完成
+    //两个线程都结束后，主线程才继续执行 
+
+    std::cout << counter << std::endl;    // 输出 2
+
+    return 0;
+}
+```
+为什么这个例子能说明 mutex 的本质？  
+两个线程 同时执行 add()  
+如果没有 mutex，counter++ 会产生 数据竞争（race condition）  
+有了 std::lock_guard<std::mutex> lock(m)：  
+每次只有 一个线程 能进入临界区  
+保证 counter++ 的操作是安全的  
+最终输出稳定为 2  
+
+如果不使用 join（结果不稳定）  
+输出可能是：0  
+
+## Semaphore
+mutex = 只能一个线程进入临界区  
+semaphore = 可以允许 N 个线程同时进入（计数型资源）  
+
+mutex —— Mutual Exclusion
+- 只有 一个线程 能持有锁
+- 用于保护 不可并行的共享资源
+- 持有者必须是同一个线程才能 unlock
+- 属于 所有权型同步原语
+
+semaphore —— Counting / Binary Semaphore
+- 内部维护一个 计数器
+- 计数 > 0：允许线程进入
+- 计数 = 0：线程阻塞
+- 可允许 多个线程同时访问资源
+- 没有“所有权”概念，任何线程都可以 release
+
+## 两种mutex
+std::mutex = C++ 标准库的用户态互斥量（跨平台）    
+HANDLE hMutex = Windows 内核对象互斥量（跨进程）  
+
+### 用 std::mutex 的场景
+普通 C++ 多线程程序  
+高性能场景  
+跨平台代码  
+RAII 管理资源  
+不需要跨进程同步  
+
+### 用 HANDLE hMutex 的场景
+Windows 专用程序  
+多个进程之间需要同步  
+需要命名互斥量  
+需要与其他 Windows API（如 WaitForSingleObject）配合  
+
+### 为什么不推荐在单进程里用 HANDLE hMutex
+性能差（频繁进入内核态）  
+代码冗长（Create/Wait/Release/Close）  
+容易泄漏（忘记 CloseHandle）  
+不符合现代 C++ 风格（没有 RAII）  
+不跨平台（Linux/macOS 无法使用）  
+所以在单进程内，std::mutex 永远优于 HANDLE hMutex。  
+
 # Cpp98Example
 ## 内存分区模型
 C和C++都一样  

@@ -64,12 +64,12 @@ LinkListElement* FindLinkListElement(LinkListElement* head, int data){
 }
 
 void TraverseLinkList(LinkListElement *head){
-	cout<<"Traverse Linked List Data: ";
+	std::cout<<"Traverse Linked List Data: ";
 	while(head->next!= NULL){
-		cout<<head->next->data<<" ";
+		std::cout<<head->next->data<<" ";
 		head = head->next;
 	}
-	cout<<endl;
+	std::cout<<std::endl;
 }
 
 void ClearLinkList(LinkListElement *head){
@@ -82,11 +82,11 @@ void ClearLinkList(LinkListElement *head){
 }
 
 void LinkedListTest(){
-	cout<<"=====Linked List Test====="<<endl;
+	std::cout<<"=====Linked List Test====="<<std::endl;
 
 	LinkListElement *head = new LinkListElement(0);
 
-	cout<<"Print Empty Linked List: ";
+	std::cout<<"Print Empty Linked List: ";
 	TraverseLinkList(head);
 
 	for(int i = 0;i < 5; i++){
@@ -97,13 +97,13 @@ void LinkedListTest(){
 
 	LinkListElement *result = FindLinkListElement(head,112);
 
-	cout<<"Find element 112, result is "<<result->data<<endl;
+	std::cout<<"Find element 112, result is "<<result->data<<std::endl;
 
 	InsertLinkListElement_Front(head, 9999);
-	cout<<"Insert 9999 to Linked List: ";
+	std::cout<<"Insert 9999 to Linked List: ";
 	TraverseLinkList(head);
 
-	cout<<"Delete Test:"<<endl;
+	std::cout<<"Delete Test:"<<std::endl;
 	DeleteLinkListElement(head, 103);
 
 	TraverseLinkList(head);
@@ -124,7 +124,7 @@ void LinkedListTest(){
 
 	TraverseLinkList(head);
 
-	cout<<endl;
+	std::cout<<std::endl;
 }
 
 #endif
