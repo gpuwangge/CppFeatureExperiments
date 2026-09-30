@@ -194,8 +194,10 @@ polymorthism是运行阶段确定，是动态多肽
 VFT会存method address。当继承的时候，子类会继承父类的VFT。如果没有重写，那这个指针跟父类一样；如果发生了重写，指针会换成重写后的method adress。当用父类指针指向子类对象的时候，会直接访问VFT里的地址，也就是说假如发生了重写，必然调用的是子类的method。  
 
 ## 模版
+```
 template<typename T>  
 template<class T>  
+```
 以上两个用法等同  
 
 模版也分为函数模版和类模版两类。  
