@@ -1,7 +1,7 @@
 #include "main.h"
 
 void SmartPointerCraft::TestCraft(){
-	std::cout<<"user test"<<std::endl;
+
 }
 
 

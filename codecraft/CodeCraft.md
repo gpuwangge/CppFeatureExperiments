@@ -1,7 +1,7 @@
 # Smart Pointer
 RAII 是 Resource Acquisition Is Initialization 的缩写  
 中文通常翻译为： 资源获取即初始化  
-把资源的生命周期绑定到对象的生命周期上。  
+把资源的生命周期绑定到对象的生命周期上。   
 ```
 void GoldCraft() override{
     std::unique_ptr<int[]> arr;
@@ -33,6 +33,24 @@ int main(){
 
 } // main结束，arr自动释放数组
 ```
+unique_pointer作为返回值：因为 unique_ptr 不能拷贝，只能移动，函数返回时编译器会自动进行 move/返回值优化。 
+```
+#include <memory>
+std::unique_ptr<int[]> createArray(){
+    auto arr = std::make_unique<int[]>(10);
 
+    arr[0] = 100;
+    arr[1] = 200;
+
+    return arr;
+}
+int main(){
+    auto arr = createArray();
+
+    // 使用
+    std::cout << arr[0];
+
+} // arr 析构，数组自动释放
+```
 
 
