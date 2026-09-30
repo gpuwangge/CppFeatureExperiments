@@ -9,7 +9,9 @@
 
 class CraftBase{
 public:
-    CraftBase(){}
+    CraftBase(){
+        std::cout<<"================================================"<<std::endl;
+    }
     ~CraftBase(){}
     void StartCraft(){
         std::cout<<"Gold Craft: "; GoldCraft();
@@ -24,7 +26,6 @@ public:
 class SmartPointerCraft : public CraftBase{
 public:
     SmartPointerCraft(){
-        std::cout<<"================================================"<<std::endl;
         std::cout<<"Q: Create an array of smart pointer, print 1,2,3"<<std::endl;
     }
     void GoldCraft() override{
