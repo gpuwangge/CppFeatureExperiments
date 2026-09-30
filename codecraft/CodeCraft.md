@@ -53,4 +53,50 @@ int main(){
 } // arr 析构，数组自动释放
 ```
 
+# Multithread
+```
+void GoldCraft() override{
+    int counter = 0;        // 共享变量
+    std::mutex m;           // 锁, 有lock和unlock两种方法
+
+    auto add = [&]() {
+        m.lock();
+        for (int i = 0; i < 1000000; ++i) counter++;
+        m.unlock();
+    };
+    std::thread t1(add);
+    std::thread t2(add);
+
+    t1.join(); //让当前线程阻塞，直到目标线程执行结束。主线程（main()）停在这里不往下执行。等 t1 完成。
+    t2.join(); //再等 t2 完成,两个线程都结束后，主线程才继续执行
+
+    std::cout << counter << std::endl;    // 输出 2000000
+}
+```
+
+lambda表达式，调用成员函数add
+[&] —— 捕获外部变量,也就是counter和m
+
+以下两种用法等价
+```
+std::lock_guard<std::mutex> lock(m);            // 自动加锁、自动解锁, lock_guard 是管理这个锁的 RAII 对象
+for (int i = 0; i < 1000000; ++i) counter++;    // 临界区：只能一个线程进入
+```
+```
+m.lock();
+for (int i = 0; i < 1000000; ++i) counter++;
+m.unlock();
+```
+
+如果add是成员函数，不能这样写
+```
+std::thread t1(add);
+std::thread t2(add);
+```
+正确写法：
+```
+std::thread t1(&MultiThreadTest::add, this);
+std::thread t2(&MultiThreadTest::add, this);
+```
+
 
