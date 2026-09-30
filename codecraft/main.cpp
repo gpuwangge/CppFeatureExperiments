@@ -1,9 +1,12 @@
-#include <string>
-#include <vector>
-#include <iostream>
+#include "main.h"
+
+void SmartPointerCraft::TestCraft(){
+	std::cout<<"user test"<<std::endl;
+}
+
 
 int main(){
-	std::cout<<"Hello World!"<<std::endl;
+	SmartPointerCraft{}.StartCraft();
 	
 	return 0;
 }
