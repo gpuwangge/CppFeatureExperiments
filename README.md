@@ -5,6 +5,8 @@ Go to the project dir
 > cmake -G "MinGW Makefiles" ..  
 > make -j 
 
+[CodeCraft](https://github.com/gpuwangge/CppFeatureExperiments/blob/main/codecraft/CodeCraft.md)
+
 # CppMultithreadExample
 进程和线程：每个进程有自己的virtual address space  
 进程的内存有：  
