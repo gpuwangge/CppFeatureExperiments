@@ -20,9 +20,7 @@ public:
     virtual void TestCraft() = 0;
 };
 
-//RAII 是 Resource Acquisition Is Initialization 的缩写
-//中文通常翻译为： 资源获取即初始化
-//把资源的生命周期绑定到对象的生命周期上。
+
 class SmartPointerCraft : public CraftBase{
 public:
     SmartPointerCraft(){
@@ -36,7 +34,6 @@ public:
         arr[1] = 2;
         arr[2] = 3;
         std::cout<<arr[0]<<","<<arr[1]<<","<<arr[2]<<std::endl;
-
     }
     void TestCraft() override;
 };
