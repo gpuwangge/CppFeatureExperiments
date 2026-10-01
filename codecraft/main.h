@@ -9,6 +9,8 @@
 #include <thread>
 #include <mutex>
 
+#include <unordered_map>
+
 class CraftBase{
 public:
     CraftBase(){
@@ -28,7 +30,7 @@ public:
 class SmartPointerCraft : public CraftBase{
 public:
     SmartPointerCraft(){
-        std::cout<<"Q: Create an array of smart pointer, print 1,2,3"<<std::endl;
+        std::cout<<"Create an array of smart pointer, print 1,2,3"<<std::endl;
     }
     void TestCraft() override;
     void GoldCraft() override{
@@ -45,7 +47,7 @@ public:
 class MultiThreadTest: public CraftBase{
 public:
     MultiThreadTest(){
-        std::cout<<"Q: Create a lambda function(count 1m with a shared variable), then create 2 threads, total count 2m"<<std::endl;
+        std::cout<<"Create a lambda function(count 1m with a shared variable), then create 2 threads, total count 2m"<<std::endl;
     }
     void TestCraft() override;
     void GoldCraft() override{
@@ -64,6 +66,30 @@ public:
         t2.join(); //再等 t2 完成,两个线程都结束后，主线程才继续执行
 
         std::cout << counter << std::endl;    // 输出 2000000
+    }
+};
+
+
+class HashtableTest: public CraftBase{
+public:
+    HashtableTest(){
+        std::cout<<"Create a HashtableTest object. Try find/assign/erase operations"<<std::endl;
+    }
+    void TestCraft() override;
+    void GoldCraft() override{
+        std::unordered_map<std::string, int> age;
+        age["Alice"] = 30;
+        age["Bob"] = 25;
+        age["Charlie"] = 35;
+
+        std::cout << "Alice's age: " << age["Alice"] << std::endl; // 输出 30
+        if(age.find("Bob") != age.end()) 
+            std::cout << "Bob's age: " << age["Bob"] << std::endl; // 输出 25
+
+        age.erase("Charlie");
+        if(age.find("Charlie") == age.end()) 
+            std::cout << "Charlie not found" << std::endl; // 输出 "Charlie not found"
+
     }
 };
 

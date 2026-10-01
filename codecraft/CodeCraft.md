@@ -3,6 +3,7 @@ RAII 是 Resource Acquisition Is Initialization 的缩写
 中文通常翻译为： 资源获取即初始化  
 把资源的生命周期绑定到对象的生命周期上。   
 ```
+#include <memory>
 void GoldCraft() override{
     std::unique_ptr<int[]> arr;
     arr = std::make_unique<int[]>(3);
@@ -54,6 +55,8 @@ int main(){
 ```
 
 # Multithread
+#include <thread>
+#include <mutex>
 ```
 void GoldCraft() override{
     int counter = 0;        // 共享变量
@@ -99,4 +102,30 @@ std::thread t1(&MultiThreadTest::add, this);
 std::thread t2(&MultiThreadTest::add, this);
 ```
 
+# Hashtable
+平均情况下查找/插入/删除都是 O(1)。
+```
+#include <unordered_map>
+class HashtableTest: public CraftBase{
+public:
+    HashtableTest(){
+        std::cout<<"Create a HashtableTest object. Try find/assign/erase operations"<<std::endl;
+    }
+    void TestCraft() override;
+    void GoldCraft() override{
+        std::unordered_map<std::string, int> age;
+        age["Alice"] = 30;
+        age["Bob"] = 25;
+        age["Charlie"] = 35;
 
+        std::cout << "Alice's age: " << age["Alice"] << std::endl; // 输出 30
+        if(age.find("Bob") != age.end()) 
+            std::cout << "Bob's age: " << age["Bob"] << std::endl; // 输出 25
+
+        age.erase("Charlie");
+        if(age.find("Charlie") == age.end()) 
+            std::cout << "Charlie not found" << std::endl; // 输出 "Charlie not found"
+
+    }
+};
+```
