@@ -55,9 +55,9 @@ int main(){
 ```
 
 # Multithread
+```
 #include <thread>
 #include <mutex>
-```
 void GoldCraft() override{
     int counter = 0;        // 共享变量
     std::mutex m;           // 锁, 有lock和unlock两种方法
@@ -129,3 +129,19 @@ public:
     }
 };
 ```
+
+# Sort
+```
+#include <algorithm>
+void GoldCraft() override{
+    auto compare = [](int a, int b) { return a > b;};
+    std::sort(arr.begin(), arr.end(), compare);
+    std::cout << "Sorted array: ";
+    for(auto& num : arr){
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+}
+```
+
+
