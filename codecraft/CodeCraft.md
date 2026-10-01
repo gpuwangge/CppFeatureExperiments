@@ -173,4 +173,53 @@ void GoldCraft() override{
 }
 ```
 
+# List
+List里面remove和erase的区别:  
+- remove：把要保留的东西移到前面
+- erase：真正删除后面的东西。
+
+List和Vector的区别  
+- std::vector = dynamic array
+- std::list = doubly linked list。
+
+list 没有：list[2] 这种随机访问。  
+所以可以把 list 简单记成：  
+双向链表 + iterator + 插入/删除方便，但不能随机访问。  
+
+std::forward_list是单向链表（singly linked list），每个节点只有 next，因此比 std::list 更轻量。  
+
+```c++
+void GoldCraft() override{
+    nums.push_back(10);
+    nums.push_front(0);
+    for(auto &num : nums) std::cout << num << " ";
+    std::cout << std::endl;
+
+    nums.reverse();
+    std::cout << "Reversed list: ";
+    for(auto &num : nums) std::cout << num << " ";
+    std::cout << std::endl;
+
+    nums.remove(5);
+    std::cout << "List after removing 5: ";
+    for(auto &num : nums) std::cout << num << " ";
+    std::cout << std::endl;
+
+    auto it = std::find(nums.begin(), nums.end(), 9);
+    nums.insert(it, 99);
+    std::cout << "List after inserting 99 before 9: ";
+    for(auto &num : nums) std::cout << num << " ";
+    std::cout << std::endl;
+
+    nums.erase(
+        std::remove(nums.begin(), nums.end(), 1), 
+        nums.end());
+    std::cout << "List after erasing 1: ";
+    for(auto &num : nums) std::cout << num << " ";
+    std::cout << std::endl;
+}
+```
+
+
+
 

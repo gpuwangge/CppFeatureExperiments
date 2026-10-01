@@ -9,6 +9,7 @@
 #include <mutex>
 #include <unordered_map>
 #include <algorithm>
+#include <list>
 
 class CraftBase{
 public:
@@ -114,6 +115,43 @@ public:
     }
 };
 
+class ListTest: public CraftBase{
+public:
+    ListTest(){
+        std::cout<<"Create a list of integers: nums, test insert, erase, and reverse"<<std::endl;
+    }
+    std::list<int> nums{5, 1, 2, 9, 1, 5, 6};
+    void TestCraft() override;
+    void GoldCraft() override{
+        nums.push_back(10);
+        nums.push_front(0);
+        for(auto &num : nums) std::cout << num << " ";
+        std::cout << std::endl;
+
+        nums.reverse();
+        std::cout << "Reversed list: ";
+        for(auto &num : nums) std::cout << num << " ";
+        std::cout << std::endl;
+
+        nums.remove(5);
+        std::cout << "List after removing 5: ";
+        for(auto &num : nums) std::cout << num << " ";
+        std::cout << std::endl;
+
+        auto it = std::find(nums.begin(), nums.end(), 9);
+        nums.insert(it, 99);
+        std::cout << "List after inserting 99 before 9: ";
+        for(auto &num : nums) std::cout << num << " ";
+        std::cout << std::endl;
+
+        nums.erase(
+            std::remove(nums.begin(), nums.end(), 1), 
+            nums.end());
+        std::cout << "List after erasing 1: ";
+        for(auto &num : nums) std::cout << num << " ";
+        std::cout << std::endl;
+    }
+};
 
 
 
