@@ -2,7 +2,7 @@
 RAII 是 Resource Acquisition Is Initialization 的缩写  
 中文通常翻译为： 资源获取即初始化  
 把资源的生命周期绑定到对象的生命周期上。   
-```
+```c++
 #include <memory>
 void GoldCraft() override{
     std::unique_ptr<int[]> arr;
@@ -16,7 +16,7 @@ void GoldCraft() override{
 小知识：  
 如果一个函数负责创建/分配动态数组，并且希望数组生命周期由调用者继续管理，  
 那么用 std::unique_ptr 传入通常比裸指针更安全、更清晰。  
-```
+```c++
 #include <memory>
 void createArray(std::unique_ptr<int[]>& arr){
     arr = std::make_unique<int[]>(10);
@@ -35,7 +35,7 @@ int main(){
 } // main结束，arr自动释放数组
 ```
 unique_pointer作为返回值：因为 unique_ptr 不能拷贝，只能移动，函数返回时编译器会自动进行 move/返回值优化。 
-```
+```c++
 #include <memory>
 std::unique_ptr<int[]> createArray(){
     auto arr = std::make_unique<int[]>(10);
@@ -55,7 +55,7 @@ int main(){
 ```
 
 # Multithread
-```
+```c++
 #include <thread>
 #include <mutex>
 void GoldCraft() override{
@@ -81,23 +81,23 @@ lambda表达式，调用成员函数add
 [&] —— 捕获外部变量,也就是counter和m
 
 以下两种用法等价
-```
+```c++
 std::lock_guard<std::mutex> lock(m);            // 自动加锁、自动解锁, lock_guard 是管理这个锁的 RAII 对象
 for (int i = 0; i < 1000000; ++i) counter++;    // 临界区：只能一个线程进入
 ```
-```
+```c++
 m.lock();
 for (int i = 0; i < 1000000; ++i) counter++;
 m.unlock();
 ```
 
 如果add是成员函数，不能这样写
-```
+```c++
 std::thread t1(add);
 std::thread t2(add);
 ```
 正确写法：
-```
+```c++
 std::thread t1(&MultiThreadTest::add, this);
 std::thread t2(&MultiThreadTest::add, this);
 ```
@@ -122,7 +122,7 @@ map和unordered_map的区别：前者自动保持key有序，代价如下：
 | key 重复 | ❌          | ❌               |
 
 
-```
+```c++
 #include <unordered_map>
 void GoldCraft() override{
     std::unordered_map<std::string, int> age;
@@ -147,7 +147,7 @@ void GoldCraft() override{
 ```
 
 # Sort
-```
+```c++
 std::sort(v.begin(), v.end());
 ```
 时间复杂度是：O(N log N)  
@@ -161,7 +161,7 @@ C++ 的 std::sort 通常基于 Introsort（内省排序），结合了：
 空间复杂度通常：O(log N)  
 主要来自递归/排序内部的栈空间；具体实现可能有所不同。  
 
-```
+```c++
 #include <algorithm>
 void GoldCraft() override{
     auto compare = [](int a, int b) { return a > b;};
