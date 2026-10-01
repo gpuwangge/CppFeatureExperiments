@@ -132,6 +132,20 @@ public:
 
 # Sort
 ```
+std::sort(v.begin(), v.end());
+```
+时间复杂度是：O(N log N)  
+为什么？  
+C++ 的 std::sort 通常基于 Introsort（内省排序），结合了：
+- Quick Sort：平均 O(N log N)
+- Heap Sort：保证最坏 O(N log N)
+- Insertion Sort：小范围数据优化
+
+所以标准要求 std::sort 的比较次数最坏情况下也是 O(N log N)。  
+空间复杂度通常：O(log N)  
+主要来自递归/排序内部的栈空间；具体实现可能有所不同。  
+
+```
 #include <algorithm>
 void GoldCraft() override{
     auto compare = [](int a, int b) { return a > b;};
