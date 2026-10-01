@@ -103,31 +103,47 @@ std::thread t2(&MultiThreadTest::add, this);
 ```
 
 # Hashtable
-平均情况下查找/插入/删除都是 O(1)。
+平均情况下查找/插入/删除都是 O(1)。 
+
+"="和"insert"都可以赋值，区别如下： 
+| 操作                      | key 不存在 | key 已存在 |
+| ----------------------- | ------- | ------- |
+| `m["Bob"] = 25`         | 创建      | **覆盖**  |
+| `m.insert({"Bob", 25})` | 创建      | **不覆盖** |
+
+map和unordered_map的区别：前者自动保持key有序，代价如下：  
+|        | `map`      | `unordered_map` |
+| ------ | ---------- | --------------- |
+| 是否排序   | ✅ 按 key 排序 | ❌ 不保证顺序         |
+| 底层     | 通常红黑树      | Hash Table      |
+| 查找     | O(log N)   | 平均 O(1)         |
+| 插入     | O(log N)   | 平均 O(1)         |
+| 删除     | O(log N)   | 平均 O(1)         |
+| key 重复 | ❌          | ❌               |
+
+
 ```
 #include <unordered_map>
-class HashtableTest: public CraftBase{
-public:
-    HashtableTest(){
-        std::cout<<"Create a HashtableTest object. Try find/assign/erase operations"<<std::endl;
-    }
-    void TestCraft() override;
-    void GoldCraft() override{
-        std::unordered_map<std::string, int> age;
-        age["Alice"] = 30;
-        age["Bob"] = 25;
-        age["Charlie"] = 35;
+void GoldCraft() override{
+    std::unordered_map<std::string, int> age;
+    age["Alice"] = 30;
+    age["David"] = 25;
+    age["Charlie"] = 35;
+    
+    age.insert(std::make_pair<std::string, int>("Bob", 99));
 
-        std::cout << "Alice's age: " << age["Alice"] << std::endl; // 输出 30
-        if(age.find("Bob") != age.end()) 
-            std::cout << "Bob's age: " << age["Bob"] << std::endl; // 输出 25
+    std::cout << "Alice's age: " << age["Alice"] << std::endl; // 输出 30
+    if(age.find("Bob") != age.end()) 
+        std::cout << "Bob's age: " << age["Bob"] << std::endl; // 输出 25
 
-        age.erase("Charlie");
-        if(age.find("Charlie") == age.end()) 
-            std::cout << "Charlie not found" << std::endl; // 输出 "Charlie not found"
+    age.erase("Charlie");
+    if(age.find("Charlie") == age.end()) 
+        std::cout << "Charlie not found" << std::endl; // 输出 "Charlie not found"
 
-    }
-};
+    for(auto it = age.begin(); it != age.end(); it++)
+        std::cout << it->first << "=" << it->second << " ";
+    std::cout << std::endl;
+}
 ```
 
 # Sort

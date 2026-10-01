@@ -72,14 +72,16 @@ public:
 class HashtableTest: public CraftBase{
 public:
     HashtableTest(){
-        std::cout<<"Create a HashtableTest object. Try find/assign/erase operations"<<std::endl;
+        std::cout<<"Create a HashtableTest object. Try find/insert/erase operations"<<std::endl;
     }
     void TestCraft() override;
     void GoldCraft() override{
         std::unordered_map<std::string, int> age;
         age["Alice"] = 30;
-        age["Bob"] = 25;
+        age["David"] = 25;
         age["Charlie"] = 35;
+        
+        age.insert(std::make_pair<std::string, int>("Bob", 99));
 
         std::cout << "Alice's age: " << age["Alice"] << std::endl; // 输出 30
         if(age.find("Bob") != age.end()) 
@@ -89,6 +91,9 @@ public:
         if(age.find("Charlie") == age.end()) 
             std::cout << "Charlie not found" << std::endl; // 输出 "Charlie not found"
 
+        for(auto it = age.begin(); it != age.end(); it++)
+            std::cout << it->first << "=" << it->second << " ";
+        std::cout << std::endl;
     }
 };
 
