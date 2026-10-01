@@ -129,12 +129,11 @@ void GoldCraft() override{
     age["Alice"] = 30;
     age["David"] = 25;
     age["Charlie"] = 35;
-    
     age.insert(std::make_pair<std::string, int>("Bob", 99));
 
     std::cout << "Alice's age: " << age["Alice"] << std::endl; // 输出 30
     if(age.find("Bob") != age.end()) 
-        std::cout << "Bob's age: " << age["Bob"] << std::endl; // 输出 25
+        std::cout << "Bob's age: " << age["Bob"] << std::endl; // 输出 99
 
     age.erase("Charlie");
     if(age.find("Charlie") == age.end()) 
