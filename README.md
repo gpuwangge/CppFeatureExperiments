@@ -308,8 +308,7 @@ final关键字可以用于以下两种情况：
 ## std future
 std::future 是 C++11 引入的异步编程工具，用于获取异步任务的执行结果。  
 它通常和 std::async、std::promise、std::packaged_task 配合使用。  
-```
-
+```c++
 #include <iostream>
 #include <future>
 #include <thread>
@@ -333,8 +332,16 @@ int main() {
     std::cout << "Result = " << result << '\n';
     return 0;
 }
-
 ```
+输出大致如下：  
+```
+Doing other work...
+（等待约 2 秒）
+Result = 42
+```
+注意：std::launch::async 明确要求异步执行。若不指定启动策略，std::async 也可能选择延迟执行。  
+
+
 | API | 用途 |
 |---|---|
 | `std::future<T>` | 保存一个未来可获取的 `T` 类型结果 |
@@ -345,4 +352,26 @@ int main() {
 | `std::promise<T>` | 由一方主动设置结果，另一方通过 `future` 获取 |
 | `std::shared_future<T>` | 允许多个调用者共享并读取同一个结果 |
 
+### 关键细节
+1 get() 只能调用一次
+```c++
+int result = f.get();
+// f.get(); // 错误：future 已经不再持有共享状态
+```
+2 wait() 不会取走结果
+```c++
+f.wait();          // 等待完成
+int result = f.get(); // 仍然可以获取结果
+```
+3 使用 wait_for() 检查是否完成  
+```
+using namespace std::chrono_literals;
 
+if (f.wait_for(100ms) == std::future_status::ready) {
+    std::cout << f.get();
+} else {
+    std::cout << "Not ready yet";
+}
+```
+4 std::future 不等于线程  
+std::future 是结果的访问接口，不负责本身执行任务。通常由 std::async 或 std::thread 等机制执行任务。  
