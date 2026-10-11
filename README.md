@@ -308,6 +308,34 @@ final关键字可以用于以下两种情况：
 ## std future
 std::future 是 C++11 引入的异步编程工具，用于获取异步任务的执行结果。  
 它通常和 std::async、std::promise、std::packaged_task 配合使用。  
+
+### std::future跟std::thread的区别
+| 概念 | 含义 | 例子 |
+|---|---|---|
+| 同步（Synchronous） | 调用方等待操作完成，再继续 | 调用函数，等它返回 |
+| 异步（Asynchronous） | 发起操作后，可以先做其他事情，不必立即等待结果 | 提交任务后继续处理其他数据 |
+| 多线程（Multithreading） | 使用多个线程执行任务 | `std::thread` 创建两个线程 |
+
+std::thread 也能实现异步执行和线程同步，但 std::future 解决的是另一个问题：如何方便地获取异步任务的结果。  
+std::future 不一定意味着创建了一个新线程。  
+- std::async(std::launch::async, ...)：异步执行任务。标准不保证一定新建一个线程，但实现通常会使用独立线程执行。  
+- std::async(std::launch::deferred, ...)：任务不会立即执行，直到调用 get() 或 wait() 时才执行任务。  
+- std::thread：直接创建并管理一个独立线程。  
+
+另外，std::future 的析构行为也值得注意：由 std::async(std::launch::async, ...) 返回的最后一个相关 future，在特定条件下析构时可能等待任务完成。  
+因此，不要认为丢弃 future 就一定能让任务在后台无等待地继续运行。  
+
+简单记忆：thread 关注怎么运行，future 关注怎么拿到结果。  
+| 功能 | `std::thread` | `std::future` |
+|---|---|---|
+| 创建线程、执行任务 | 是 | 本身不负责 |
+| 等待任务完成 | `join()` | `wait()` / `get()` |
+| 直接获取返回值 | 不支持，通常需要额外变量 | `get()` |
+| 传递异常给调用方 | 需要额外处理 | `get()` 可以重新抛出任务异常 |
+| 获取结果的超时等待 | 不直接支持 | `wait_for()` |
+| 多个调用者读取同一结果 | 需要自行同步 | `std::shared_future` |
+
+
 ```c++
 #include <iostream>
 #include <future>
