@@ -305,7 +305,7 @@ final关键字可以用于以下两种情况：
 1. 一个类或结构体不希望被继承。  
 2. 一个虚函数不希望被override。
 
-## std future
+## std::future
 std::future 是 C++11 引入的异步编程工具，用于获取异步任务的执行结果。  
 它通常和 std::async、std::promise、std::packaged_task 配合使用。  
 
