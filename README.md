@@ -303,6 +303,46 @@ finally块区域内的代码都将会被执行到。
 ## final关键字
 final关键字可以用于以下两种情况：  
 1. 一个类或结构体不希望被继承。  
-2. 一个虚函数不希望被override。  
+2. 一个虚函数不希望被override。
+
+## std future
+std::future 是 C++11 引入的异步编程工具，用于获取异步任务的执行结果。  
+它通常和 std::async、std::promise、std::packaged_task 配合使用。  
+```
+
+#include <iostream>
+#include <future>
+#include <thread>
+
+int compute() {
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    return 42;
+}
+
+int main() {
+    // 异步执行 compute()
+    std::future<int> f = std::async(
+        std::launch::async, compute
+    );
+
+    std::cout << "Doing other work...\n";
+
+    // 获取结果；如果尚未完成，这里会等待
+    int result = f.get();
+
+    std::cout << "Result = " << result << '\n';
+    return 0;
+}
+
+```
+| API | 用途 |
+|---|---|
+| `std::future<T>` | 保存一个未来可获取的 `T` 类型结果 |
+| `std::async()` | 异步执行函数，并返回 `future` |
+| `future.get()` | 获取结果；如果任务尚未完成，会等待 |
+| `future.wait()` | 等待任务完成，但不获取结果 |
+| `future.wait_for()` | 等待指定时间，检查任务是否完成 |
+| `std::promise<T>` | 由一方主动设置结果，另一方通过 `future` 获取 |
+| `std::shared_future<T>` | 允许多个调用者共享并读取同一个结果 |
 
 
