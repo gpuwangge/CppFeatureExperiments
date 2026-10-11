@@ -403,3 +403,70 @@ if (f.wait_for(100ms) == std::future_status::ready) {
 ```
 4 std::future 不等于线程  
 std::future 是结果的访问接口，不负责本身执行任务。通常由 std::async 或 std::thread 等机制执行任务。  
+
+## std::promise
+std::promise 最简单的理解：一个线程设置结果，另一个线程通过 std::future 获取结果。  
+
+promise可以配合future使用，如下
+```c++
+#include <iostream>
+#include <future>
+
+int main() {
+    std::promise<int> p;
+    std::future<int> f = p.get_future();
+
+    p.set_value(42);           // 设置结果
+    std::cout << f.get() << '\n'; // 输出 42
+}
+```
+以上例子在同一个线程中使用promise和future，可以运行，但体现不出promise和future配合的优势。  
+要体现优势，我们希望一个线程负责计算，另一个线程负责获取结果，这样就需要手动再创建一个thread。  
+
+```c++
+#include <iostream>
+#include <future>
+#include <thread>
+
+int main() {
+    std::promise<int> p;
+    std::future<int> f = p.get_future();
+
+    std::thread t([&p]() { //这个函数t相当于一个worker，干真正的活儿
+        p.set_value(42);  // 设置结果
+    });
+
+    std::cout << f.get() << '\n';  // 获取结果：42
+
+    t.join();
+    return 0;
+}
+```
+这里的价值是：  
+- thread：让计算在另一个线程中执行。
+- promise：把计算结果发送出去。
+- future：让接收方等待并获取结果。
+
+执行流程
+1. p.get_future()：获取与 promise 关联的 future。  
+2. p.set_value(42)：设置结果为 42。  
+3. f.get()：获取结果。如果结果尚未设置，就等待。  
+4. t.join()：等待工作线程结束。
+
+记忆：
+- std::promise：生产结果（Producer）。
+- std::future：获取结果（Consumer）。
+- set_value() 设置结果，get() 获取结果。
+
+注意：这个例子中，f.get() 和 t.join() 都可能等待，但它们的目的不同：前者等待结果就绪，后者等待线程结束。
+
+另外，如果只是想异步执行一个函数并获取返回值，通常直接使用 std::async 更简单：
+```c++
+auto f = std::async(std::launch::async, [] {
+    return 42;
+});
+
+std::cout << f.get() << '\n';
+```
+std::async 适合直接执行任务并获取结果；std::promise 适合在你需要手动决定何时、由谁设置结果时使用，例如已有的工作线程需要把结果交给另一个线程。  
+
