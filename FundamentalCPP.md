@@ -1,0 +1,464 @@
+
+# CppMultithreadExample
+进程和线程：每个进程有自己的virtual address space  
+进程的内存有：  
+- 栈：局部变量，函数参数和返回地址。进程里面的每个线程都有自己的栈。  
+- 对：动态  
+- BSS: 全局变量和静态  
+- 数据段  
+- 代码段  
+- 内核：不允许应用程序读写  
+
+## mutex
+mutex（互斥量）是 C++ 中最基础、最关键的线程同步原语之一，用来保证多线程访问共享资源时的安全性。  
+mutex的作用是：同一时间只允许一个线程进入临界区（critical section），避免数据竞争（data race）。  
+一个简单的例子：  
+```
+#include <iostream>
+#include <thread>
+#include <mutex>
+
+int counter = 0;        // 共享变量
+std::mutex m;           // 互斥量
+
+void add() {
+    std::lock_guard<std::mutex> lock(m);  // 自动加锁、自动解锁
+    counter++;                            // 临界区：只能一个线程进入
+}
+
+int main() {
+    std::thread t1(add);
+    std::thread t2(add);
+
+    t1.join(); //让当前线程阻塞，直到目标线程执行结束。主线程（main()）停在这里不往下执行。等 t1 完成。
+    t2.join(); //再等 t2 完成
+    //两个线程都结束后，主线程才继续执行 
+
+    std::cout << counter << std::endl;    // 输出 2
+
+    return 0;
+}
+```
+为什么这个例子能说明 mutex 的本质？  
+两个线程 同时执行 add()  
+如果没有 mutex，counter++ 会产生 数据竞争（race condition）  
+有了 std::lock_guard<std::mutex> lock(m)：  
+每次只有 一个线程 能进入临界区  
+保证 counter++ 的操作是安全的  
+最终输出稳定为 2  
+
+如果不使用 join（结果不稳定）  
+输出可能是：0  
+
+## Semaphore
+mutex = 只能一个线程进入临界区  
+semaphore = 可以允许 N 个线程同时进入（计数型资源）  
+
+mutex —— Mutual Exclusion
+- 只有 一个线程 能持有锁
+- 用于保护 不可并行的共享资源
+- 持有者必须是同一个线程才能 unlock
+- 属于 所有权型同步原语
+
+semaphore —— Counting / Binary Semaphore
+- 内部维护一个 计数器
+- 计数 > 0：允许线程进入
+- 计数 = 0：线程阻塞
+- 可允许 多个线程同时访问资源
+- 没有“所有权”概念，任何线程都可以 release
+
+## 两种mutex
+std::mutex = C++ 标准库的用户态互斥量（跨平台）    
+HANDLE hMutex = Windows 内核对象互斥量（跨进程）  
+
+### 用 std::mutex 的场景
+普通 C++ 多线程程序  
+高性能场景  
+跨平台代码  
+RAII 管理资源  
+不需要跨进程同步  
+
+### 用 HANDLE hMutex 的场景
+Windows 专用程序  
+多个进程之间需要同步  
+需要命名互斥量  
+需要与其他 Windows API（如 WaitForSingleObject）配合  
+
+### 为什么不推荐在单进程里用 HANDLE hMutex
+性能差（频繁进入内核态）  
+代码冗长（Create/Wait/Release/Close）  
+容易泄漏（忘记 CloseHandle）  
+不符合现代 C++ 风格（没有 RAII）  
+不跨平台（Linux/macOS 无法使用）  
+所以在单进程内，std::mutex 永远优于 HANDLE hMutex。  
+
+# Cpp98Example
+## 内存分区模型
+C和C++都一样  
+Windows, Linux和macOS都一样  
+- Code Segment：存编译后的二进制可执行代码，共享，只读  
+- Data Segment(全局区)  
+    Static Segment: 存全局变量(跨文件)和静态变量(局部)  
+    Constant Segment：存常量数据(和静态变量的区别是必须定义时初始化，而且不可改变), 但是局部常量不在这里，在下面那个区  
+- Stack Segment: 存局部变量，函数参数和函数调用的返回地址。由编译器分配。(不要返回局部变量的地址)  
+- Heap Segment: 存动态内存  
+
+结论1: 前两区是程序运行前建立的区，后面两区是程序运行后建立的区  
+结论2: const修饰不决定数据放在哪里。如果是局部的就在stack区；全局的都在data区。  
+结论3: static的都在data区。因为在整个程序生命周期都存在。  
+
+## Friend
+Friend让一个类或函数访问另一个类的私有成员  
+1.全局函数做友元  
+做一个全局函数，让它可以访问类的公有和私有属性。  
+做法是，把全局函数的定义放在类的最前面，并加上friend关键字。  
+2.类做友元  
+做法是，把另一个类的名字拷贝到自己类的最前面，并加上friend关键字。  
+3.成员函数做友元  
+跟2相比，就是不把visit权限给整个类，而只是给类里面的某些成员函数。  
+
+## 常函数
+常函数：成员对象后面加上const  
+常函数内不可修改成员变量（除非成员变量加了mutable)  
+
+## 常对象
+常对象：生命对象前加上const  
+常对象只能调用常函数  
+
+## this指針
+在类的存放的时候，非静态成员变量和非静态成员函数是分开存放的。非静态成员变量每个对象存一份。但每个非静态成员函数只存一份，所有对象共享。  
+问题是，对于非静态成员函数的代码，它不知道是哪个对象在调用它。this指针是为了解决这个问题，它指向调用这个非静态成员函数的类的对象。  
+this指针不可修改  
+每个非静态成员函数都有this指针，不需要单独设定。  
+应用举例：链式编程  
+```c++
+Person& func(){  
+    return *this;  
+}
+```
+
+## 类和对象
+空的对象大小是多少：占用1个字节。cpp编译器给空对象分配1字节空间，是为了区分位置。  
+- 放一个int成员变量后，大小为4个字节。  
+- 静态成员变量不影响类的对象的大小。  
+- 放一个成员函数后，不影响类的对象的大小。(成员函数和成员变量分开存储)  
+- 静态成员函数：也不影响类的对象的大小。  
+结论：只有非静态成员变量位于类的对象上。  
+
+## 重载
+运算符重载可以在类里重载，也可以在全局重载。类里面重载没法指定顺序(比如<<)  
+
+c++编译器给一个类创建的时候创建了四个默认函数  
+构造  
+析构  
+拷贝构造(浅拷贝)  
+赋值(浅拷贝)  
+
+## 继承
+子类继承父类之后，也会有一份父类的数据。  
+比如父类有三个int(public, protected, provate), 子类有一个int，总大小就为16 bytes。  
+
+cl和g++都有相应的命令可以查看类的对象详情  
+
+如果父类和子类有同名成员，默认调用子类成员。如果加上作用域也可以调用父类成员。比如：s.Base::m_A  
+
+允许一个子类继承多个类  
+
+菱形继承：两个父类继承了一个类  
+问题：子类继承了两份相同的数据  
+解决办法：virtual inheritance  
+
+## 纯虚函数和抽象类
+因为父类virtual函数一般是没什么用的，可以改成纯虚函数(virtual = 0)  
+类中只要有一个纯虚函数，就叫做抽象类，无法实例化。抽象类的子类必须重写抽象类的纯虚函数。  
+
+## 多肽
+overload其实是静态多肽  
+polymorthism是运行阶段确定，是动态多肽  
+要让地址晚绑定，使用virtual关键字  
+动态多肽发动条件  
+1.有继承关系   
+2.重写父类virtual函数  
+重写和重载的区别是，前者完全相同  
+子类可以加上virtual，也可以不加virtual，没有影响  
+3.使用的时候，使用父类的指针或引用来使用子类的对象  
+
+多肽的底层原理  
+如果一个类里面有一个函数，没有virtual修饰，算是一个空类，大小是1字节。如果用virtual修饰，大小变成4个字节。这4个字节是一个指针，指向virtual function table。  
+VFT会存method address。当继承的时候，子类会继承父类的VFT。如果没有重写，那这个指针跟父类一样；如果发生了重写，指针会换成重写后的method adress。当用父类指针指向子类对象的时候，会直接访问VFT里的地址，也就是说假如发生了重写，必然调用的是子类的method。  
+
+## 模版
+```
+template<typename T>  
+template<class T>  
+```
+以上两个用法等同  
+
+模版也分为函数模版和类模版两类。  
+区别仅仅是类模版无法自动类型推导，也就是用<>显式指出类型。  
+
+对于某个具体情况，可以使用具体化模版来解决特殊类型的通用化  
+
+STL是基于模版来写的  
+
+类模版的成员函数在调用的时候才确定  
+
+类模版做参数对象  
+
+类模版与继承：  
+如果父类是模版，子类必须指定父类T的类型才行，不然会报错。  
+要想更灵活一点，子类也要写成模版。并且子类的模版参数T继承自父类的模版参数T  
+
+类模版成员函数可以类外实现：  
+除了添加函数模版keyword，还要指定类模版参数列表  
+
+类模版分文件编写：  
+类模版成员函数创建时机是在调用阶段，会导致分文件编写时链接不到  
+解决方式1:直接包含cpp源文件  
+但实践中很少有人这么做  
+解决方式2:将声明和实现写在同一个文件中，然后文件后缀改成hpp(改hpp并不是强制，只是约定成俗)  
+大家约定俗成：当看见hpp文件之后，里面就有类模版  
+
+类模版与友元：  
+第一种方式：类内直接写  
+第二种方式：类外需要提前让编译器知道全局函数的实现  
+这种实现方式比较复杂。  
+
+# CppBasicExample
+## 常用位操作小技巧
+### 判断奇偶
+只要根据最未位是0还是1来决定，为0就是偶数，为1就是奇数。因此可以用  
+```c++
+if((a & 1) == 0)  
+```
+代替if(a % 2 == 0)来判断a是不是偶数。  
+
+### 交换两数  
+```c++
+a ^= b;
+b ^= a;
+a ^= b;
+```
+
+### 变换符号
+因此变换符号只需要取反后加1即可  
+```c++
+~a + 1
+```
+
+### 求二进制数中1的个数  
+```c++
+for (c = 0; n; ++c)
+	n = n&(n-1); // 清除最低位的1
+```
+举例：8（1000）= 7（0111）+ 1（0001），所以8 & 7 = （1000）&（0111）= 0（0000）  
+再比如7（0111）= 6（0110）+ 1（0001），所以7 & 6 = （0111）&（0110）= 6（0110）  
+
+查表法: 如果它是偶数，那么n的二进制中1的个数与n/2中1的个数是相同的  
+如果n是奇数，那么n的二进制中1的个数是n/2中1的个数+1  
+(http://www.cnblogs.com/graphics/archive/2010/06/21/1752421.html)  
+
+LSB: Least Significant Bits, 二进制的最右边那一位  
+MSB: Most Significant Bits, 二进制的最左边那一位(在有符号数中就是符号位)  
+
+## String Buffer
+String STL use Copy-On-Write  
+Reason of String Buffer: Create a buffer array  
+string.append(x)  
+rather then string = string + x  
+写时才拷贝（Copy-On-Write）技术，就是编程界“懒惰行为”——拖延战术的产物。  
+举个例子，比如我们有个程序要写文件，不断地根据网络传来的数据写, 如果每一次fwrite或是fprintf都要进行一个磁盘的I/O操作的话，都简直就是性能上巨大的损失，因此通常的做法是，每次写文件操作都写在特定大小的一块内存中（磁盘缓存），只有当我们关闭文件时，才写到磁盘上（这就是为什么如果文件不关闭，所写的东西会丢失的原因）。  
+更有甚者是文件关闭时都不写磁盘，而一直等到关机或是内存不够时才写磁盘，Unix就是这样一个系统，如果非正常退出，那么数据就会丢失，文件就会损坏。  
+
+## NP困难(NP - hard)
+某个问题被称作NP困难，当且仅当存在一个NP完全问题可以在多项式时间图灵归约到这个问题。  
+指问题NP困难的答案可用于解决NP完全问题.因此解决NP完全问题不会难于解决NP困难问题.  
+栗子：旅行推销员问题（Travelling Salesman Problem)  
+有n个城市，一个推销员要从其中某一个城市出发，唯一走遍所有的城市，再回到他出发的城市，求最短的路线。  
+也即求一个最短的哈密顿回路。  
+即使用dp也要指数时间  
+
+## NP Problem完全问题
+是NP（非决定性多项式时间）中最难的决定性问题.  
+因此NP完备问题应该是最不可能被化简为P（多项式时间可决定）的决定性问题的集合。  
+栗子：背包问题（Knapsack problem）  
+给定一组物品，每种物品都有自己的重量和价格，在限定的总重量内，我们如何选择，才能使得物品的总价格最高。  
+利用DP，背包问题存在一个伪多项式时间算法  
+
+## 伪多项式时间
+若一个数值算法的时间复杂度可以表示为输入数值N的多项式，则称其时间复杂度为伪多项式时间  
+
+## try-finally语句
+这就是try-finally语句最具有魔幻能力的地方，即不管在何种情况下，在离开当前的作用域时，  
+finally块区域内的代码都将会被执行到。  
+
+## final关键字
+final关键字可以用于以下两种情况：  
+1. 一个类或结构体不希望被继承。  
+2. 一个虚函数不希望被override。
+
+## std::future
+std::future 是 C++11 引入的异步编程工具，用于获取异步任务的执行结果。  
+它通常和 std::async、std::promise、std::packaged_task 配合使用。  
+
+### std::future跟std::thread的区别
+| 概念 | 含义 | 例子 |
+|---|---|---|
+| 同步（Synchronous） | 调用方等待操作完成，再继续 | 调用函数，等它返回 |
+| 异步（Asynchronous） | 发起操作后，可以先做其他事情，不必立即等待结果 | 提交任务后继续处理其他数据 |
+| 多线程（Multithreading） | 使用多个线程执行任务 | `std::thread` 创建两个线程 |
+
+std::thread 也能实现异步执行和线程同步，但 std::future 解决的是另一个问题：如何方便地获取异步任务的结果。  
+std::future 不一定意味着创建了一个新线程。  
+- std::async(std::launch::async, ...)：异步执行任务。标准不保证一定新建一个线程，但实现通常会使用独立线程执行。  
+- std::async(std::launch::deferred, ...)：任务不会立即执行，直到调用 get() 或 wait() 时才执行任务。  
+- std::thread：直接创建并管理一个独立线程。  
+
+另外，std::future 的析构行为也值得注意：由 std::async(std::launch::async, ...) 返回的最后一个相关 future，在特定条件下析构时可能等待任务完成。  
+因此，不要认为丢弃 future 就一定能让任务在后台无等待地继续运行。  
+
+简单记忆：thread 关注怎么运行，future 关注怎么拿到结果。  
+| 功能 | `std::thread` | `std::future` |
+|---|---|---|
+| 创建线程、执行任务 | 是 | 本身不负责 |
+| 等待任务完成 | `join()` | `wait()` / `get()` |
+| 直接获取返回值 | 不支持，通常需要额外变量 | `get()` |
+| 传递异常给调用方 | 需要额外处理 | `get()` 可以重新抛出任务异常 |
+| 获取结果的超时等待 | 不直接支持 | `wait_for()` |
+| 多个调用者读取同一结果 | 需要自行同步 | `std::shared_future` |
+
+
+```c++
+#include <iostream>
+#include <future>
+#include <thread>
+
+int compute() {
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    return 42;
+}
+
+int main() {
+    // 异步执行 compute()
+    std::future<int> f = std::async(
+        std::launch::async, compute
+    );
+
+    std::cout << "Doing other work...\n";
+
+    // 获取结果；如果尚未完成，这里会等待
+    int result = f.get();
+
+    std::cout << "Result = " << result << '\n';
+    return 0;
+}
+```
+输出大致如下：  
+```
+Doing other work...
+（等待约 2 秒）
+Result = 42
+```
+注意：std::launch::async 明确要求异步执行。若不指定启动策略，std::async 也可能选择延迟执行。  
+
+
+| API | 用途 |
+|---|---|
+| `std::future<T>` | 保存一个未来可获取的 `T` 类型结果 |
+| `std::async()` | 异步执行函数，并返回 `future` |
+| `future.get()` | 获取结果；如果任务尚未完成，会等待 |
+| `future.wait()` | 等待任务完成，但不获取结果 |
+| `future.wait_for()` | 等待指定时间，检查任务是否完成 |
+| `std::promise<T>` | 由一方主动设置结果，另一方通过 `future` 获取 |
+| `std::shared_future<T>` | 允许多个调用者共享并读取同一个结果 |
+
+### 关键细节
+1 get() 只能调用一次
+```c++
+int result = f.get();
+// f.get(); // 错误：future 已经不再持有共享状态
+```
+2 wait() 不会取走结果
+```c++
+f.wait();          // 等待完成
+int result = f.get(); // 仍然可以获取结果
+```
+3 使用 wait_for() 检查是否完成  
+```
+using namespace std::chrono_literals;
+
+if (f.wait_for(100ms) == std::future_status::ready) {
+    std::cout << f.get();
+} else {
+    std::cout << "Not ready yet";
+}
+```
+4 std::future 不等于线程  
+std::future 是结果的访问接口，不负责本身执行任务。通常由 std::async 或 std::thread 等机制执行任务。  
+
+## std::promise
+std::promise 最简单的理解：一个线程设置结果，另一个线程通过 std::future 获取结果。  
+
+promise可以配合future使用，如下
+```c++
+#include <iostream>
+#include <future>
+
+int main() {
+    std::promise<int> p;
+    std::future<int> f = p.get_future();
+
+    p.set_value(42);           // 设置结果
+    std::cout << f.get() << '\n'; // 输出 42
+}
+```
+以上例子在同一个线程中使用promise和future，可以运行，但体现不出promise和future配合的优势。  
+要体现优势，我们希望一个线程负责计算，另一个线程负责获取结果，这样就需要手动再创建一个thread。  
+
+```c++
+#include <iostream>
+#include <future>
+#include <thread>
+
+int main() {
+    std::promise<int> p;
+    std::future<int> f = p.get_future();
+
+    std::thread t([&p]() { //这个函数t相当于一个worker，干真正的活儿
+        p.set_value(42);  // 设置结果
+    });
+
+    std::cout << f.get() << '\n';  // 获取结果：42
+
+    t.join();
+    return 0;
+}
+```
+这里的价值是：  
+- thread：让计算在另一个线程中执行。
+- promise：把计算结果发送出去。
+- future：让接收方等待并获取结果。
+
+执行流程
+1. p.get_future()：获取与 promise 关联的 future。  
+2. p.set_value(42)：设置结果为 42。  
+3. f.get()：获取结果。如果结果尚未设置，就等待。  
+4. t.join()：等待工作线程结束。
+
+记忆：
+- std::promise：生产结果（Producer）。
+- std::future：获取结果（Consumer）。
+- set_value() 设置结果，get() 获取结果。
+
+注意：这个例子中，f.get() 和 t.join() 都可能等待，但它们的目的不同：前者等待结果就绪，后者等待线程结束。
+
+另外，如果只是想异步执行一个函数并获取返回值，通常直接使用 std::async 更简单：
+```c++
+auto f = std::async(std::launch::async, [] {
+    return 42;
+});
+
+std::cout << f.get() << '\n';
+```
+std::async 适合直接执行任务并获取结果；std::promise 适合在你需要手动决定何时、由谁设置结果时使用，例如已有的工作线程需要把结果交给另一个线程。  
+
