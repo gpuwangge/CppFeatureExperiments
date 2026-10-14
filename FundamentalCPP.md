@@ -224,6 +224,51 @@ STL是基于模版来写的
 第二种方式：类外需要提前让编译器知道全局函数的实现  
 这种实现方式比较复杂。  
 
+## Template Metaprogramming (TMP)
+核心思想是：利用 C++ 模板在编译期进行计算或生成代码，而不是等到程序运行时再执行。  
+普通代码 vs. Template Metaprogramming  
+普通 C++ 代码在运行时计算：  
+```c++
+int factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}
+int x = factorial(5);  // 运行时计算
+```
+模板元编程可以在编译期计算：  
+```c++
+template<int N>
+struct Factorial {
+    static constexpr int value = N * Factorial<N - 1>::value;
+};
+
+template<>
+struct Factorial<1> {
+    static constexpr int value = 1;
+};
+
+int x = Factorial<5>::value;  // 编译期计算，结果为 120
+```
+这里的 Factorial<5> 会通过模板递归展开，最终得到常量 120。  
+
+模板元编程常用于：
+- 编译期优化： 根据模板参数确定尺寸、类型或执行策略。
+- 避免运行时开销： 将某些判断和计算提前到编译期。
+- 泛型编程： 让同一份代码支持不同数据类型和配置。
+- CUDA kernel 优化： 使用模板参数固定 tile size、数据类型等，使编译器有机会进行常量传播、循环展开等优化。
+
+例如：
+```c
+template<int BLOCK_SIZE>
+__global__ void kernel() {
+    // BLOCK_SIZE 是编译期常量
+}
+```
+调用不同的 kernel<128>() 和 kernel<256>()，会生成针对不同模板参数实例化的 kernel。  
+注意：模板实例化本身不保证性能更好，最终效果取决于编译器生成的代码和具体实现。  
+
+Template metaprogramming is a technique that uses C++ templates to perform computations or manipulate types at compile time, enabling generic code and potentially reducing runtime overhead.  
+
 # CppBasicExample
 ## 常用位操作小技巧
 ### 判断奇偶
