@@ -99,9 +99,9 @@ public:
 
 		// 3. 剩余空间够大就切开，剩下的放回链表
         if (node->size >= aligned_size + sizeof(Node) + ALIGN) {
-            Node* rest = reinterpret_cast<Node*>(
+            Node* rest_node = reinterpret_cast<Node*>(
                 reinterpret_cast<char*>(node + 1) + aligned_size);
-            rest->size = node->size - aligned_size - sizeof(Node);
+            rest_node->size = node->size - aligned_size - sizeof(Node);
 
 			//以下两行是更新node到free链表的标准操作，总是把新的node放在链表的头部而不是最后
 			//主要原因是插到头部最简单也最快，而且对这个分配器来说，链表顺序不影响正确性。
@@ -109,8 +109,8 @@ public:
 			//刚用过的内存很可能还在 CPU cache 里，再用它会更快。很多真实分配器（比如 tcmalloc 的 thread cache）就是故意这么做的。
             //但是，想做合并时，插到头部就不够了。要判断相邻块，最方便的做法是让链表按地址排序，deallocate时插到正确的位置
 			//如果要使用排序方案的话，在这里放回链表的时候就要做有序插入
-			rest->next = list_head;
-            list_head = rest;
+			rest_node->next = list_head;
+            list_head = rest_node;
 
             node->size = aligned_size;
         }
@@ -120,11 +120,16 @@ public:
 
 	void deallocate(void* p) {
 		if (!p) return;
-        Node* b = static_cast<Node*>(p) - 1;          // 退回到头部
+		//为什么用 static_cast，不用 reinterpret_cast
+		//void* 和其他指针之间互相转换，用 static_cast 就够了，这是语言允许的标准转换。
+		//两个无关的指针类型之间转换，比如 Node* 转 char*，就必须用 reinterpret_cast。
+		//一般原则是能用 static_cast 就不用 reinterpret_cast，因为后者限制更少，更容易写错。
+		//用 (Node*)p - 1 完全没问题，写起来更短,等价于static_cast<Node*>(p) - 1
+        Node* node = static_cast<Node*>(p) - 1;          // 退回到头部
 
 		//如上所说的，下面两行是更新node到free list头部的标准操作
-        b->next = list_head;
-        list_head = b;
+        node->next = list_head;
+        list_head = node;
 	}
 
 	// 调试用：打印空闲链表
