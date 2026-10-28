@@ -1,5 +1,26 @@
 #include <iostream>
 #include <cstring>
+/* Memory Allocator问题描述
+给一个allocate 4kb的malloc，实现general malloc
+考察点进货一整个切糕，但让顾客觉得按小段出售
+
+用辅助list做记账本，记账本的目的是记录空段,list的元素就是空段地址。
+这样的好处：用户可以去快速查memory，看哪里有空着的。
+（这道题所有的所谓内存分割合并什么的都是指虚拟内存）
+（知识点：malloc得到的内存是一定是要连续的；这里的地址说的都是虚拟地址；实际物理地址可能是不连续的）
+（硬件最后是靠mmu和page table把虚拟内存和物理内存连起来的）
+
+实现细节：
+不要用std::list, 因为它本身就会用malloc manage 内存，用了就失去了实现malloc的初衷。
+应该使用侵入式链表（intrusive list）：节点就是数据本身，不需要额外的内存。
+*/
+
+/* 完整流程
+1. 拿到新页：在开头写一个 16 字节的头部，记下 size = 4080。这时整块都是空闲的，放进 free list。
+2. allocator：从 free list 里找一个够大的块，把它从链表里摘下来，返回 node + 1 给用户。
+3. 用户使用中：这个块不在 free list 里，但头部还在内存里，size 还保存着，因为 deallocator(free) 时要用。
+4. deallocator：用 p - 1 找回头部，再把它挂回 free list。
+*/
 
 // ---------- 模拟的 4KB 分配函数：从一个静态数组里一页一页地给 ----------
 //const：侧重于“只读”（Run-time 或 Compile-time 均可）。
@@ -36,8 +57,8 @@ public:
     explicit Allocator(PageFn page_fn) : page_fn_(page_fn) {}
 
 	struct alignas(16) Node {
-        size_t size;      // 用户可用大小（不含头部）
-        Node* next;      // 只在空闲时使用
+        size_t size;      // 用户可用大小（不含头部）。 8 字节
+        Node* next;      // 只在空闲时使用。8 字节（64 位系统上指针是 8 字节）
     };
     static constexpr size_t PAGE  = kPageSize;
     static constexpr size_t ALIGN = 16;
@@ -53,35 +74,40 @@ public:
 	void* allocate(size_t size) {
 		if (size == 0) return nullptr;
         size_t n = align_up(size);
-        if (n > PAGE - sizeof(Node)) return nullptr;   // 不支持超过一页
 
-		// 1. 在空闲链表里找第一个够大的块
-		// 这里用二级指针，因为要修改 free_list_ 本身。
-		// 如果不用二级指针，那么就要用两个一级指针，一个指向当前块，一个指向prev块，这样比较麻烦。
+		// 不支持超过一页
+        if (n > PAGE - sizeof(Node)) return nullptr;   //sizeof(Node)是16字节
+
+		// 这里用二级指针，因为要修改 list_head本身。
+		// 如果不用二级指针，那么就要用两个一级指针，一个指向当前块，一个指向prev块，并且修改list_head比较麻烦。
+		// 参考：https://github.com/gpuwangge/CppFeatureExperiments/blob/main/FundamentalCPP.md
+		// 当要移除某个node的时候，不管node是不是头节点，都可以用*pp = node->next;移除
         Node** pp = &list_head;
+
+		// 1. 在free链表里找第一个够大的块
         while (*pp && (*pp)->size < n) pp = &(*pp)->next;
 
-		//2. 处理节点
-		Node* b = *pp;
-        if (b) {
-            *pp = b->next;                              // 从链表摘下
+		//2. 处理节点：如果free链表里有足够的块(pp不是空)，就摘下放到node；如果链表没有合适，就新建一个页。不管哪种，node里面就是用户要的空间的tag；node+1就是用户要的空间
+		Node* node = *pp;
+        if (node) {
+            *pp = node->next;                              // 从链表摘下
         } else {
-            b = static_cast<Node*>(page_fn_());        // 没有就要新的一页
-            if (!b) return nullptr;
-            b->size = PAGE - sizeof(Node);
+            node = static_cast<Node*>(page_fn_());        // 没有就要新的一页
+            if (!node) return nullptr;
+            node->size = PAGE - sizeof(Node); 			  //sizeof(Node)是16字节
         }
 
 		// 3. 剩余空间够大就切开，剩下的放回链表
-        if (b->size >= n + sizeof(Node) + ALIGN) {
+        if (node->size >= n + sizeof(Node) + ALIGN) {
             Node* rest = reinterpret_cast<Node*>(
-                reinterpret_cast<char*>(b + 1) + n);
-            rest->size = b->size - n - sizeof(Node);
+                reinterpret_cast<char*>(node + 1) + n);
+            rest->size = node->size - n - sizeof(Node);
             rest->next = list_head;
             list_head = rest;
-            b->size = n;
+            node->size = n;
         }
 
-        return b + 1;                                   // 头部后面是用户内存
+        return node + 1;                                   // 头部后面是用户内存
 	}
 
 	void deallocate(void* p) {
