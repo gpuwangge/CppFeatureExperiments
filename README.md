@@ -1,9 +1,11 @@
 # Build Instruction
 Go to the project dir  
-> mkdir build  
-> cd build  
-> cmake -G "MinGW Makefiles" ..  
-> make -j 
+```
+mkdir build  
+cd build  
+cmake -G "MinGW Makefiles" ..  
+make -j 
+```
 
 # Documents
 [CodeCraft](https://github.com/gpuwangge/CppFeatureExperiments/blob/main/codecraft/CodeCraft.md)  
