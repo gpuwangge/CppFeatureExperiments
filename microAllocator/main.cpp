@@ -73,10 +73,10 @@ public:
 
 	void* allocate(size_t size) {
 		if (size == 0) return nullptr;
-        size_t n = align_up(size);
+        size_t aligned_size = align_up(size);
 
 		// 不支持超过一页
-        if (n > PAGE - sizeof(Node)) return nullptr;   //sizeof(Node)是16字节
+        if (aligned_size > PAGE - sizeof(Node)) return nullptr;   //sizeof(Node)是16字节
 
 		// 这里用二级指针，因为要修改 list_head本身。
 		// 如果不用二级指针，那么就要用两个一级指针，一个指向当前块，一个指向prev块，并且修改list_head比较麻烦。
@@ -85,7 +85,7 @@ public:
         Node** pp = &list_head;
 
 		// 1. 在free链表里找第一个够大的块
-        while (*pp && (*pp)->size < n) pp = &(*pp)->next;
+        while (*pp && (*pp)->size < aligned_size) pp = &(*pp)->next;
 
 		//2. 处理节点：如果free链表里有足够的块(pp不是空)，就摘下放到node；如果链表没有合适，就新建一个页。不管哪种，node里面就是用户要的空间的tag；node+1就是用户要的空间
 		Node* node = *pp;
@@ -98,13 +98,21 @@ public:
         }
 
 		// 3. 剩余空间够大就切开，剩下的放回链表
-        if (node->size >= n + sizeof(Node) + ALIGN) {
+        if (node->size >= aligned_size + sizeof(Node) + ALIGN) {
             Node* rest = reinterpret_cast<Node*>(
-                reinterpret_cast<char*>(node + 1) + n);
-            rest->size = node->size - n - sizeof(Node);
-            rest->next = list_head;
+                reinterpret_cast<char*>(node + 1) + aligned_size);
+            rest->size = node->size - aligned_size - sizeof(Node);
+
+			//以下两行是更新node到free链表的标准操作，总是把新的node放在链表的头部而不是最后
+			//主要原因是插到头部最简单也最快，而且对这个分配器来说，链表顺序不影响正确性。
+			//还有一个附带的好处：缓存。插到头部之后，链表就是后进先出（LIFO），刚 free 的块会被下一次 malloc 最先拿到。
+			//刚用过的内存很可能还在 CPU cache 里，再用它会更快。很多真实分配器（比如 tcmalloc 的 thread cache）就是故意这么做的。
+            //但是，想做合并时，插到头部就不够了。要判断相邻块，最方便的做法是让链表按地址排序，deallocate时插到正确的位置
+			//如果要使用排序方案的话，在这里放回链表的时候就要做有序插入
+			rest->next = list_head;
             list_head = rest;
-            node->size = n;
+
+            node->size = aligned_size;
         }
 
         return node + 1;                                   // 头部后面是用户内存
@@ -113,6 +121,8 @@ public:
 	void deallocate(void* p) {
 		if (!p) return;
         Node* b = static_cast<Node*>(p) - 1;          // 退回到头部
+
+		//如上所说的，下面两行是更新node到free list头部的标准操作
         b->next = list_head;
         list_head = b;
 	}
