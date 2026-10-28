@@ -35,15 +35,15 @@ public:
 	PageFn page_fn_;
     explicit Allocator(PageFn page_fn) : page_fn_(page_fn) {}
 
-	struct alignas(16) Block {
+	struct alignas(16) Node {
         size_t size;      // 用户可用大小（不含头部）
-        Block* next;      // 只在空闲时使用
+        Node* next;      // 只在空闲时使用
     };
     static constexpr size_t PAGE  = kPageSize;
     static constexpr size_t ALIGN = 16;
 	//把 n 向上对齐到 ALIGN 的整数倍
     static size_t align_up(size_t n) { return (n + ALIGN - 1) & ~(ALIGN - 1); }
-	Block* free_list_ = nullptr;
+	Node* list_head = nullptr; //free list
 
 	//这两行是为了禁止拷贝：如果这个 Allocator 管理一块内存以及它的分配状态，就不能随便复制，
 	//否则可能出现“两份独立的管理状态，却指向同一块内存”的问题。这是资源管理类常见的设计。
@@ -53,31 +53,31 @@ public:
 	void* allocate(size_t size) {
 		if (size == 0) return nullptr;
         size_t n = align_up(size);
-        if (n > PAGE - sizeof(Block)) return nullptr;   // 不支持超过一页
+        if (n > PAGE - sizeof(Node)) return nullptr;   // 不支持超过一页
 
 		// 1. 在空闲链表里找第一个够大的块
 		// 这里用二级指针，因为要修改 free_list_ 本身。
 		// 如果不用二级指针，那么就要用两个一级指针，一个指向当前块，一个指向prev块，这样比较麻烦。
-        Block** pp = &free_list_;
+        Node** pp = &list_head;
         while (*pp && (*pp)->size < n) pp = &(*pp)->next;
 
-		//2. 处理块
-		Block* b = *pp;
+		//2. 处理节点
+		Node* b = *pp;
         if (b) {
             *pp = b->next;                              // 从链表摘下
         } else {
-            b = static_cast<Block*>(page_fn_());        // 没有就要新的一页
+            b = static_cast<Node*>(page_fn_());        // 没有就要新的一页
             if (!b) return nullptr;
-            b->size = PAGE - sizeof(Block);
+            b->size = PAGE - sizeof(Node);
         }
 
 		// 3. 剩余空间够大就切开，剩下的放回链表
-        if (b->size >= n + sizeof(Block) + ALIGN) {
-            Block* rest = reinterpret_cast<Block*>(
+        if (b->size >= n + sizeof(Node) + ALIGN) {
+            Node* rest = reinterpret_cast<Node*>(
                 reinterpret_cast<char*>(b + 1) + n);
-            rest->size = b->size - n - sizeof(Block);
-            rest->next = free_list_;
-            free_list_ = rest;
+            rest->size = b->size - n - sizeof(Node);
+            rest->next = list_head;
+            list_head = rest;
             b->size = n;
         }
 
@@ -86,15 +86,15 @@ public:
 
 	void deallocate(void* p) {
 		if (!p) return;
-        Block* b = static_cast<Block*>(p) - 1;          // 退回到头部
-        b->next = free_list_;
-        free_list_ = b;
+        Node* b = static_cast<Node*>(p) - 1;          // 退回到头部
+        b->next = list_head;
+        list_head = b;
 	}
 
 	// 调试用：打印空闲链表
     void print_free_list() const {
         std::printf("free list:\n");
-        for (Block* b = free_list_; b; b = b->next)
+        for (Node* b = list_head; b; b = b->next)
             std::printf("\t [%p size=%zu]\n", static_cast<void*>(b), b->size);
         std::printf("\n");
     }
