@@ -1,37 +1,24 @@
-#include <iostream>
-
-#include <mutex>
-#include <condition_variable>
-#include <thread>
-
-#include <queue>
-#include <vector>
-#include <optional>
-
-/*
-TinyPeekQueue
-A thread-safe bounded queue with try-push, try-pop, and peek for GPU modeling.
-
-*/
-
-
-// ============================================================
-// PartI: TinyThreadQueue
-// ============================================================
-
-// ============================================================
-// PartII: Test
-// ============================================================
+#include "main.h"
+#include "tests.hpp"
 
 // ============================================================
 // PartIII: Main
 // ============================================================
-
 int main(){
-	std::cout<<"===Thread Queue Test begin==="<<std::endl;
+	std::cout<<"===Peek Queue Test begin==="<<std::endl;
 
+	testEmptyQueue();
+    testCapacityAndFIFO();
+    testPeekDoesNotModifyQueue();
+    testInvalidCapacity();
+    testMoveOnlyType();
+
+    // 重复运行，增加覆盖不同线程交错的机会。
+    for (int i = 0; i < 10; ++i) {
+        testMPMC();
+    }
 	
-	std::cout<<"===Thread Queue Test end==="<<std::endl;
+	std::cout<<"===Peek Queue Test end==="<<std::endl;
 	return 0;
 }
 
