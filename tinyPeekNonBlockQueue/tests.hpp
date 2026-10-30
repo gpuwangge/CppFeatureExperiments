@@ -9,7 +9,7 @@
 // ============================================================
 // 1. 空队列状态。
 void testEmptyQueue() {
-    TinyPeekQueue<int> queue(2);
+    TinyPeekNonBlockQueue<int> queue(2);
 
     auto state = queue.peek();
 
@@ -24,7 +24,7 @@ void testEmptyQueue() {
 
 // 2. 容量限制、FIFO、取出后重新入队。
 void testCapacityAndFIFO() {
-    TinyPeekQueue<int> queue(2);
+    TinyPeekNonBlockQueue<int> queue(2);
 
     bool first = queue.push(10);
     bool second = queue.push(20);
@@ -74,7 +74,7 @@ void testCapacityAndFIFO() {
 
 // 3. peek 不修改队列。
 void testPeekDoesNotModifyQueue() {
-    TinyPeekQueue<int> queue(2);
+    TinyPeekNonBlockQueue<int> queue(2);
 
     bool pushed = queue.push(42);
     assert(pushed);
@@ -100,7 +100,7 @@ void testInvalidCapacity() {
     bool caught = false;
 
     try {
-        TinyPeekQueue<int> queue(0);
+        TinyPeekNonBlockQueue<int> queue(0);
     } catch (const std::invalid_argument&) {
         caught = true;
     }
@@ -111,7 +111,7 @@ void testInvalidCapacity() {
 // 5. 支持只能移动的类型。
 //    push 返回 false 时，调用者仍保留数据。
 void testMoveOnlyType() {
-    TinyPeekQueue<std::unique_ptr<int>> queue(1);
+    TinyPeekNonBlockQueue<std::unique_ptr<int>> queue(1);
 
     auto first = std::make_unique<int>(10);
     bool firstPushed = queue.push(std::move(first));
@@ -155,7 +155,7 @@ void testMPMC() {
         producerCount * itemsPerProducer;
 
     // 小容量，让满队列和锁竞争更容易出现。
-    TinyPeekQueue<int> queue(16);
+    TinyPeekNonBlockQueue<int> queue(16);
 
     std::atomic<bool> start{false};
     std::atomic<int> finishedProducers{0};

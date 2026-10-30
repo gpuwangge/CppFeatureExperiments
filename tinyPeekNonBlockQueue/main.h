@@ -8,10 +8,10 @@
 #include <optional>
 
 /*
-TinyPeekQueue
+TinyPeekNonBlockQueue
 A thread-safe bounded queue with try-push, try-pop, and peek for GPU modeling. No Close()
 
-TinyPeekQueue<T> 是一个容量固定、线程安全的队列，支持 MPMC（多生产者、多消费者），用于在线程之间传递数据。
+TinyPeekNonBlockQueue<T> 是一个容量固定、线程安全的队列，支持 MPMC（多生产者、多消费者），用于在线程之间传递数据。
 
 - 基本功能：
 push() 尝试入队，成功返回 true；
@@ -78,7 +78,7 @@ for (uint64_t cycle = 0; cycle < maxCycles; ++cycle) {
 // PartI: TinyPeekQueue
 // ============================================================
 template <typename T>
-class TinyPeekQueue {
+class TinyPeekNonBlockQueue {
 public:
     struct State {
         bool canPush;
@@ -119,7 +119,7 @@ private:
     }
 
 public:
-    explicit TinyPeekQueue(std::size_t capacity): m_capacity(capacity) {
+    explicit TinyPeekNonBlockQueue(std::size_t capacity): m_capacity(capacity) {
         if (m_capacity == 0) {
             throw std::invalid_argument(
                 "capacity must be greater than zero"
@@ -127,8 +127,8 @@ public:
         }
     }
 
-    TinyPeekQueue(const TinyPeekQueue&) = delete;
-    TinyPeekQueue& operator=(const TinyPeekQueue&) = delete;
+    TinyPeekNonBlockQueue(const TinyPeekNonBlockQueue&) = delete;
+    TinyPeekNonBlockQueue& operator=(const TinyPeekNonBlockQueue&) = delete;
 
     //两个 push() 是函数重载，分别支持“复制入队”和“移动入队”。
     //更重要的是，这样可以保证 失败不移动：队列满或拿不到锁、返回 false 时，调用者仍然保留原来的数据。

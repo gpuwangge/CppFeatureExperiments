@@ -9,7 +9,7 @@
 #include <optional>
 
 /*
-TinyThreadQueue 是一个基于 C++17 的轻量级有界阻塞队列，用于多生产者、多消费者（MPMC）场景。
+TinyCloseBlockQueue 是一个基于 C++17 的轻量级有界阻塞队列，用于多生产者、多消费者（MPMC）场景。
 - 线程安全：使用同一把互斥锁保护队列和关闭状态，支持多个线程并发调用 push()、pop() 和 close()。
 - 背压（Backpressure）：队列满时，push() 阻塞等待；消费者取出数据后，唤醒等待中的生产者继续提交，避免队列无限增长。
 - 阻塞消费：队列为空时，pop() 等待新数据，不进行忙等。
@@ -71,7 +71,7 @@ void Decode::tick()
 // PartI: TinyThreadQueue
 // ============================================================
 template <typename T>
-class TinyThreadQueue {
+class TinyCloseBlockQueue {
 private:
     const std::size_t m_capacity;
 
@@ -94,11 +94,11 @@ private:
     //.notify_all(): 唤醒所有正在等待 cv 的线程
 
 public:
-    explicit TinyThreadQueue(std::size_t capacity): m_capacity(capacity){
+    explicit TinyCloseBlockQueue(std::size_t capacity): m_capacity(capacity){
         if (m_capacity == 0) throw std::invalid_argument("capacity must be greater than zero");
     }
-    TinyThreadQueue(const TinyThreadQueue&) = delete;
-    TinyThreadQueue& operator=(const TinyThreadQueue&) = delete;
+    TinyCloseBlockQueue(const TinyCloseBlockQueue&) = delete;
+    TinyCloseBlockQueue& operator=(const TinyCloseBlockQueue&) = delete;
 
     // 队列满时等待；关闭后拒绝新数据。
     bool push(T value){
@@ -173,7 +173,7 @@ void check(bool condition, const char* message){
 void test_fifo(){
     constexpr int task_count = 1000;
 
-    TinyThreadQueue<int> queue(4);
+    TinyCloseBlockQueue<int> queue(4);
     std::vector<int> received;
     received.reserve(task_count);
 
@@ -213,7 +213,7 @@ void test_mpmc(std::size_t capacity){
     constexpr int tasks_per_producer = 1000;
     constexpr int total_tasks = producer_count * tasks_per_producer;
 
-    TinyThreadQueue<int> queue(capacity);
+    TinyCloseBlockQueue<int> queue(capacity);
 
     // 每个消费者独占自己的结果数组，不需要额外加锁。
     std::vector<std::vector<int>> results(consumer_count);
@@ -280,7 +280,7 @@ void test_mpmc(std::size_t capacity){
 // Test 3: 关闭后排空、拒绝 push、重复关闭
 // ============================================================
 void test_close_and_drain(){
-    TinyThreadQueue<int> queue(2);
+    TinyCloseBlockQueue<int> queue(2);
 
     check(queue.push(10), "Initial push failed");
     check(queue.push(20), "Initial push failed");
@@ -301,7 +301,7 @@ void test_close_and_drain(){
 // Test 4: 空队列关闭，让消费者退出
 // ============================================================
 void test_close_empty_queue(){
-    TinyThreadQueue<int> queue(1);
+    TinyCloseBlockQueue<int> queue(1);
     bool received_nothing = false;
 
     std::thread consumer([&] {
@@ -320,7 +320,7 @@ void test_close_empty_queue(){
 // Test 5: 满队列关闭，让生产者退出
 // ============================================================
 void test_close_full_queue(){
-    TinyThreadQueue<int> queue(1);
+    TinyCloseBlockQueue<int> queue(1);
     check(queue.push(10), "Initial push failed");
 
     bool push_succeeded = true;
@@ -369,7 +369,7 @@ int main(){
 }
 
 /* 运行结果
-===Thread Queue Test begin===
+===TinyCloseBlockQueue Test begin===
 [PASS] single producer / single consumer FIFO
 [PASS] multi producer / multi consumer (capacity=1)
 [PASS] multi producer / multi consumer (capacity=16)
@@ -378,7 +378,7 @@ int main(){
 [PASS] close full queue
 
 All tests passed.
-===Thread Queue Test end===
+===TinyCloseBlockQueue Test end===
 */
 
 /* 结果说明
