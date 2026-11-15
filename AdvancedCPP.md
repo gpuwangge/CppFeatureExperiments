@@ -1,3 +1,42 @@
+# Keynotes
+std::mutex m的用法  
+m.lock()  
+m.unlock()  
+(这两个方法可以用
+```
+std::lock_guard<std::mutex>
+```
+代替)  
+
+std::thread t(fun)的用法  
+t.join()  
+
+```
+std::unique_lock<std::mutex>
+```
+是高级的mutex，可以自动加锁解锁，而且是RAII对象。但开销会大一些。  
+用它实现nb push/pop/peek，因为它有个std：：try_to_lock参数是尝试获取锁，不等待  
+它有个owns_lock()方法很有用  
+最后，这个可以配合std::condition_variable使用来做block push  
+
+ringbuffer的概念  
+head：head在buffer里面的index(最老的元素，pop的位置)  
+count：元素的个数  
+Logical index（逻辑index, 或者叫offset)：数组里面的某个元素的index，从0开始算起  
+capacity：buffer总容量  
+什么是回绕(Wrap)：假设8个元素，head在6，逻辑位置是3。在找数组index的时候，6+3=9大于capacity8，即发生回绕：9%8=1, 所以数组index=1  
+
+Parrallel reduction的设计  
+首先确定有多少个数字(65536)  
+然后硬件要一个workgroup size: 有多个innovation(跟硬件资源有关，128)(tid=0~127)  
+然后每个innovation算多少个数字(64)  
+最后是计算需要的workgroup数量: 65536/128/64=8 （有8个部分和需要累加）  
+Shader具体分为两部分：  
+1 算64个数字的和，存到share memory的tid那一格里  
+2 barrier() 等待128个innovation都算完  
+3 把128个innovation的数加成一个数(也就是从share memory -> 部分和)  
+
+
 # Data Race 与 Race Condition 的区别
 Data Race（数据竞争）: 当多个线程并发访问同一块内存，至少一个线程在写入，并且这些访问没有适当的同步，就可能构成 data race。  
 在 C++ 中，data race 会导致 Undefined Behavior（未定义行为）。  
